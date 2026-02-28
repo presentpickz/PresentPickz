@@ -1,0 +1,36 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-credit-card fa-4x text-primary"></i>
+                    </div>
+                    <h2 class="mb-4">Mock Payment Gateway</h2>
+                    <p class="mb-4">This is a simulation because no valid Cashfree API keys were found.</p>
+
+                    <div class="d-flex flex-column gap-3">
+                        <div class="transaction-info p-3 bg-light rounded mb-4 text-start">
+                            <p class="mb-1"><strong>Order ID:</strong> {{ order.order_id }}</p>
+                            <p class="mb-1"><strong>Amount:</strong> ₹{{ order.total_amount }}</p>
+                            <p class="mb-0"><strong>Customer:</strong> {{ order.full_name }}</p>
+                        </div>
+
+                        <a href="{% url 'orders:payment_return' %}?order_id={{ order.order_id }}"
+                            class="btn btn-success btn-lg">
+                            <i class="fas fa-check-circle me-2"></i> Simmsulate Success
+                        </a>
+
+                        <a href="{% url 'orders:my_orders' %}" class="btn btn-danger btn-lg mt-2">
+                            <i class="fas fa-times-circle me-2"></i> Simmsulate Failure
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

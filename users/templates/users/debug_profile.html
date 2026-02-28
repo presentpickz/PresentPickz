@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile Debug - Present Pickz{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 50px 0;">
+    <div style="background: white; padding: 30px; border-radius: 12px; max-width: 800px; margin: 0 auto;">
+        <h1>Profile Photo Debug Information</h1>
+
+        <h2>User Info:</h2>
+        <ul>
+            <li><strong>Username:</strong> {{ user.username }}</li>
+            <li><strong>First Name:</strong> {{ user.first_name|default:"Not set" }}</li>
+            <li><strong>Last Name:</strong> {{ user.last_name|default:"Not set" }}</li>
+            <li><strong>Email:</strong> {{ user.email }}</li>
+            <li><strong>Is Authenticated:</strong> {{ user.is_authenticated }}</li>
+        </ul>
+
+        <h2>Profile Status:</h2>
+        <ul>
+            <li><strong>Has Profile:</strong> {{ user.profile|yesno:"Yes,No,Unknown" }}</li>
+            {% if user.profile %}
+            <li><strong>Profile ID:</strong> {{ user.profile.id }}</li>
+            <li><strong>Has Photo:</strong> {{ user.profile.profile_photo|yesno:"Yes,No" }}</li>
+            {% if user.profile.profile_photo %}
+            <li><strong>Photo URL:</strong> {{ user.profile.profile_photo.url }}</li>
+            <li><strong>Photo Path:</strong> {{ user.profile.profile_photo }}</li>
+            <div style="margin-top: 20px;">
+                <h3>Current Profile Photo:</h3>
+                <img src="{{ user.profile.profile_photo.url }}" alt="Profile Photo"
+                    style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #667eea;">
+            </div>
+            {% else %}
+            <li><strong>Photo:</strong> No photo uploaded</li>
+            {% endif %}
+            <li><strong>Updated At:</strong> {{ user.profile.updated_at }}</li>
+            {% else %}
+            <li style="color: red;"><strong>ERROR:</strong> User profile does not exist!</li>
+            <li>Run: <code>python manage.py create_user_profiles</code></li>
+            {% endif %}
+        </ul>
+
+        <h2>Template Check:</h2>
+        <div style="background: #f7f7f7; padding: 15px; border-radius: 8px; margin-top: 10px;">
+            <h3>Condition Test:</h3>
+            {% if user.is_authenticated and user.profile and user.profile.profile_photo %}
+            <p style="color: green; font-weight: bold;">✓ Photo should appear in navigation</p>
+            <p>Photo URL: <code>{{ user.profile.profile_photo.url }}</code></p>
+            {% else %}
+            <p style="color: orange; font-weight: bold;">⚠ Initials avatar will show instead</p>
+            <p>Initials: {{ user.first_name|slice:":1"|default:user.username|slice:":1"|upper }}</p>
+            {% endif %}
+        </div>
+
+        <div style="margin-top: 30px;">
+            <a href="{% url 'users:edit_profile' %}" class="btn"
+                style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                Go to Edit Profile
+            </a>
+            <a href="{% url 'users:account' %}" class="btn"
+                style="display: inline-block; padding: 12px 24px; background: #f0f0f0; color: #333; text-decoration: none; border-radius: 8px; font-weight: 600; margin-left: 10px;">
+                Go to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

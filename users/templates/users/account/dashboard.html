@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Account - Present Pickz{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/account.css' %}">
+<link rel="stylesheet" href="{% static 'css/orders.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="account-wrapper">
+    <div class="container">
+        <div class="account-layout">
+            <!-- Sidebar Navigation -->
+            <aside class="account-sidebar">
+                <div class="sidebar-header">
+                    <div class="user-avatar">
+                        {% if user.profile.profile_photo %}
+                        <img src="{{ user.profile.profile_photo.url }}" alt="{{ user.username }}"
+                            class="sidebar-profile-photo">
+                        {% else %}
+                        <div class="sidebar-avatar-initials">
+                            {{ user.first_name|slice:":1"|default:user.username|slice:":1"|upper }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="user-info">
+                        <h3>Hello,</h3>
+                        <p class="user-name">{{ user.first_name|default:user.username }}</p>
+                    </div>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <a href="{% url 'users:account' %}"
+                        class="sidebar-item {% if active_tab == 'dashboard' %}active{% endif %}">
+                        <i class="fas fa-th-large"></i>
+                        <span>My Account</span>
+                    </a>
+                    <a href="{% url 'orders:my_orders' %}"
+                        class="sidebar-item {% if active_tab == 'orders' %}active{% endif %}">
+                        <i class="fas fa-box"></i>
+                        <span>My Orders</span>
+                    </a>
+                    <a href="{% url 'users:wishlist' %}"
+                        class="sidebar-item {% if active_tab == 'wishlist' %}active{% endif %}">
+                        <i class="far fa-heart"></i>
+                        <span>Wishlist</span>
+                    </a>
+                    <a href="{% url 'users:saved_addresses' %}"
+                        class="sidebar-item {% if active_tab == 'addresses' %}active{% endif %}">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Saved Addresses</span>
+                    </a>
+                    <a href="{% url 'users:edit_profile' %}"
+                        class="sidebar-item {% if active_tab == 'profile' %}active{% endif %}">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                    <a href="{% url 'users:my_reviews' %}"
+                        class="sidebar-item {% if active_tab == 'reviews' %}active{% endif %}">
+                        <i class="fas fa-star"></i>
+                        <span>My Reviews</span>
+                    </a>
+
+                    <div class="sidebar-divider"></div>
+
+                    <a href="{% url 'help_center' %}" class="sidebar-item">
+                        <i class="fas fa-headset"></i>
+                        <span>Help Center</span>
+                    </a>
+                    <a href="{% url 'faqs' %}" class="sidebar-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>FAQs</span>
+                    </a>
+                    <a href="{% url 'returns_policy' %}" class="sidebar-item">
+                        <i class="fas fa-undo"></i>
+                        <span>Returns & Refunds</span>
+                    </a>
+                    <a href="{% url 'terms' %}" class="sidebar-item">
+                        <i class="fas fa-file-contract"></i>
+                        <span>Terms & Conditions</span>
+                    </a>
+                    <a href="{% url 'privacy' %}" class="sidebar-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Privacy Policy</span>
+                    </a>
+
+                    <div class="sidebar-divider"></div>
+
+                    <a href="#" class="sidebar-item logout-item"
+                        onclick="event.preventDefault(); document.getElementById('sidebar-logout-form').submit();">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </nav>
+
+                <form id="sidebar-logout-form" action="{% url 'users:logout' %}" method="POST" style="display: none;">
+                    {% csrf_token %}
+                </form>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="account-content">
+                {% block account_content %}
+                <!-- Default Dashboard Content -->
+                <div class="account-header">
+                    <h1>My Account</h1>
+                    <p class="subtitle">Manage your orders, profile, and preferences</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Quick Stats -->
+                    <div class="stat-card">
+                        <div class="stat-icon orders">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ total_orders }}</h3>
+                            <p>Total Orders</p>
+                        </div>
+                        <a href="{% url 'orders:my_orders' %}" class="stat-link">View All →</a>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon wishlist">
+                            <i class="far fa-heart"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ wishlist_count }}</h3>
+                            <p>Wishlist Items</p>
+                        </div>
+                        <a href="{% url 'users:wishlist' %}" class="stat-link">View Wishlist →</a>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon addresses">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ address_count }}</h3>
+                            <p>Saved Addresses</p>
+                        </div>
+                        <a href="{% url 'users:saved_addresses' %}" class="stat-link">Manage →</a>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon reviews">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ review_count }}</h3>
+                            <p>Reviews</p>
+                        </div>
+                        <a href="{% url 'users:my_reviews' %}" class="stat-link">View All →</a>
+                    </div>
+                </div>
+
+                <!-- Account Info -->
+                <div class="info-section">
+                    <h2>Account Information</h2>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h3><i class="fas fa-user"></i> Personal Details</h3>
+                            <p><strong>Username:</strong> {{ user.username }}</p>
+                            <p><strong>Email:</strong> {{ user.email }}</p>
+                            <a href="{% url 'users:edit_profile' %}" class="edit-link">Edit Profile</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="activity-section">
+                    <h2>Recent Activity</h2>
+                    {% if total_orders == 0 %}
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>No recent activity</p>
+                        <a href="{% url 'products:product_list' %}" class="cta-btn">Start Shopping</a>
+                    </div>
+                    {% else %}
+                    <div class="recent-orders-preview">
+                        <p>You have {{ total_orders }} order{{ total_orders|pluralize }}. <a
+                                href="{% url 'orders:my_orders' %}">View all</a></p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+</div>
+{% endblock %}

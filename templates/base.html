@@ -1,0 +1,339 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>{% block title %}Present Pickz{% endblock %}</title>
+    <link rel="icon" type="image/jpg" href="{% static 'images/brand_logo.jpg' %}?v={% now 'U' %}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;500;700&family=Poppins:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/design-tokens.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v={% now 'U' %}">
+    <link rel="stylesheet" href="{% static 'css/user-menu.css' %}">
+
+    <!-- Force Circular Profile Photos -->
+    <style>
+        .nav-profile-photo {
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            display: block !important;
+        }
+
+        .nav-avatar-initials {
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 50% !important;
+        }
+
+        .sidebar-profile-photo {
+            width: 80px !important;
+            height: 80px !important;
+            max-width: 80px !important;
+            max-height: 80px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            display: block !important;
+        }
+
+        /* Brand Background Color - Single Consistent Color */
+        body {
+            background: #f8eff0 !important;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="nav-container container">
+
+            <!-- LEFT: Logo + Mobile Toggle -->
+            <div class="nav-left">
+                <!-- Mobile Search Toggle -->
+                <button class="icon-btn mobile-only search-toggle" aria-label="Toggle Search">
+                    <i class="fas fa-search"></i>
+                </button>
+
+                <button class="menu-toggle" aria-label="Open Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="{% url 'home' %}" class="logo">
+                    <img src="{% static 'images/brand_logo.jpg' %}?v={% now 'U' %}" alt="Present Pickz"
+                        class="logo-img">
+                    <span class="logo-text">Present</span><span class="logo-highlight">Pickz</span>
+                </a>
+            </div>
+
+            <!-- CENTER: Navigation + Search (Desktop Only) -->
+            <div class="nav-center desktop-only">
+                <nav class="main-nav">
+                    <a href="{% url 'products:product_list' %}">Products</a>
+                    <a href="{% url 'orders:track_order' %}">Track Order</a>
+                </nav>
+
+                <!-- Search Bar -->
+                <form action="{% url 'products:product_search' %}" method="get" class="nav-search">
+                    <input type="text" name="q" placeholder="Search collectibles, gifts..." />
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+
+            <!-- RIGHT: Icons + User -->
+            <div class="nav-right">
+                <!-- Wishlist Icon Only -->
+                <a href="{% url 'users:wishlist' %}" class="icon-btn tooltip-trigger" title="Wishlist">
+                    <i class="far fa-heart"></i>
+                    <span class="badge wishlist-count" {% if not wishlist_count %}style="display: none;" {% endif %}>{{
+                        wishlist_count|default:0 }}</span>
+                </a>
+
+                <!-- Cart Icon -->
+                <a href="{% url 'cart:cart' %}" class="icon-btn tooltip-trigger" title="Cart">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="badge cart-count" {% if not cart_count %}style="display: none;" {% endif %}>{{
+                        cart_count|default:0 }}</span>
+                </a>
+
+                {% if user.is_authenticated %}
+                <div class="user-menu desktop-only pointer">
+                    <div class="user-greeting pointer">
+                        {% if user.is_authenticated and user.profile and user.profile.profile_photo %}
+                        <img src="{{ user.profile.profile_photo.url }}" alt="{{ user.username }}"
+                            class="nav-profile-photo">
+                        {% else %}
+                        <div class="nav-avatar-initials">
+                            {{ user.first_name|slice:":1"|default:user.username|slice:":1"|upper }}
+                        </div>
+                        {% endif %}
+                        <span>Hi, {{ user.first_name|default:user.username }}</span>
+                        <i class="fas fa-chevron-down ml-1" style="font-size: 0.8em;"></i>
+                    </div>
+                    <div class="user-dropdown">
+                        <a href="{% url 'users:account' %}"><i class="fas fa-user mr-2"></i>My Account</a>
+                        <a href="{% url 'orders:my_orders' %}"><i class="fas fa-box mr-2"></i>My Orders</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        </a>
+                    </div>
+                    <form id="logout-form" action="{% url 'users:logout' %}" method="POST" style="display: none;">{%
+                        csrf_token %}</form>
+                </div>
+                {% else %}
+                <a href="{% url 'users:login' %}" class="login-link desktop-only">Login</a>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- Mobile Search Dropdown -->
+        <div class="mobile-nav-search">
+            <div class="container">
+                <form action="{% url 'products:product_search' %}" method="get" class="mobile-nav-search-form">
+                    <input type="text" name="q" placeholder="Search for gifts..." required>
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Side Menu -->
+    <aside class="mobile-menu">
+        <div class="mobile-menu-header">
+            {% if user.is_authenticated %}
+            <div class="mobile-user-profile">
+                {% if user.profile.profile_photo %}
+                <img src="{{ user.profile.profile_photo.url }}" alt="{{ user.username }}" class="sidebar-profile-photo">
+                {% else %}
+                <div class="nav-avatar-initials"
+                    style="width: 60px !important; height: 60px !important; font-size: 1.5rem;">
+                    {{ user.first_name|slice:":1"|default:user.username|slice:":1"|upper }}
+                </div>
+                {% endif %}
+                <div class="mobile-user-info">
+                    <span class="mobile-welcome">Welcome back,</span>
+                    <h3 class="mobile-username">{{ user.first_name|default:user.username }}</h3>
+                </div>
+            </div>
+            {% else %}
+            <div class="mobile-guest-header">
+                <h3 class="brand-title">Present Pickz</h3>
+                <p>Curated Joy ✨</p>
+            </div>
+            {% endif %}
+            <button class="close-menu">&times;</button>
+        </div>
+
+        <div class="mobile-search-wrapper">
+            <form action="{% url 'products:product_search' %}" method="get" class="mobile-search-form">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" name="q" placeholder="Search for gifts..." autocomplete="off">
+            </form>
+        </div>
+
+        <div class="mobile-nav-links">
+            <a href="{% url 'home' %}" class="mobile-link {% if request.path == '/' %}active{% endif %}">
+                <i class="fas fa-home"></i> <span>Home</span>
+            </a>
+            <a href="{% url 'products:product_list' %}" class="mobile-link">
+                <i class="fas fa-gift"></i> <span>Shop Products</span>
+            </a>
+            <a href="{% url 'orders:track_order' %}" class="mobile-link">
+                <i class="fas fa-truck-fast"></i> <span>Track Order</span>
+            </a>
+
+            <div class="mobile-divider"></div>
+
+            <a href="{% url 'users:wishlist' %}" class="mobile-link">
+                <i class="far fa-heart"></i> <span>My Wishlist</span>
+            </a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'cart:cart' %}" class="mobile-link">
+                <i class="fas fa-shopping-bag"></i> <span>My Cart</span>
+            </a>
+            <a href="{% url 'users:account' %}" class="mobile-link">
+                <i class="fas fa-user-circle"></i> <span>My Account</span>
+            </a>
+            <a href="{% url 'orders:my_orders' %}" class="mobile-link">
+                <i class="fas fa-box-open"></i> <span>My Orders</span>
+            </a>
+            <div class="mobile-divider"></div>
+            <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                class="mobile-link logout-link">
+                <i class="fas fa-sign-out-alt"></i> <span>Sign Out</span>
+            </a>
+            {% else %}
+            <div class="mobile-auth-buttons">
+                <a href="{% url 'users:login' %}" class="mobile-btn-login">Login</a>
+                <a href="{% url 'users:signup' %}" class="mobile-btn-signup">Sign Up</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="mobile-menu-footer">
+            <p>Connect with us</p>
+            <div class="mobile-socials">
+                <a href="https://wa.me/919791867356" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+            </div>
+        </div>
+    </aside>
+    <div class="overlay"></div>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const overlay = document.querySelector('.overlay');
+        const closeMenu = document.querySelector('.close-menu');
+
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.classList.add('active');
+                overlay.classList.add('active');
+            });
+        }
+
+        if (closeMenu) closeMenu.addEventListener('click', closeMenuFunc);
+        if (overlay) overlay.addEventListener('click', closeMenuFunc);
+
+        function closeMenuFunc() {
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+
+        // Mobile Search Toggle
+        const searchToggle = document.querySelector('.search-toggle');
+        const mobileNavSearch = document.querySelector('.mobile-nav-search');
+
+        if (searchToggle && mobileNavSearch) {
+            searchToggle.addEventListener('click', () => {
+                mobileNavSearch.classList.toggle('active');
+                if (mobileNavSearch.classList.contains('active')) {
+                    mobileNavSearch.querySelector('input').focus();
+                }
+            });
+        }
+    </script>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>Present Pickz</h3>
+                    <p>Curating the world's finest collectibles and gifts for the discerning enthusiast. Experience the
+                        joy of premium gifting.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Shop</h4>
+                    <a href="{% url 'products:product_list' %}">All Products</a>
+                    <a href="#">New Arrivals</a>
+                    <a href="#">Best Sellers</a>
+                    <a href="#">Gift Cards</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <a href="https://wa.me/919791867356" target="_blank"><i class="fab fa-whatsapp"></i> Chat on
+                        WhatsApp</a>
+                    <a href="{% url 'shipping_policy' %}">Shipping Policy</a>
+                    <a href="{% url 'returns_policy' %}">Returns & Exchanges</a>
+                    <a href="{% url 'faqs' %}">FAQ</a>
+                    <a href="{% url 'privacy' %}">Privacy Policy</a>
+                    <a href="{% url 'terms' %}">Terms & Conditions</a>
+                </div>
+                <div class="footer-contact">
+                    <h4>Connect</h4>
+                    <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 1rem;">Join our newsletter for
+                        exclusive drops.</p>
+                    <form onsubmit="event.preventDefault(); alert('Subscribed!');" class="footer-newsletter-form">
+                        <input type="email" placeholder="Enter your email" class="footer-input">
+                        <button type="submit" class="footer-btn">Subscribe</button>
+                    </form>
+                    <div class="social-icons">
+                        <a href="https://wa.me/919791867356" target="_blank" title="WhatsApp Us"><i
+                                class="fab fa-whatsapp"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="#" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Present Pickz. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/wishlist.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

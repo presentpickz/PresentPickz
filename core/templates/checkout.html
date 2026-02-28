@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | Present Pickz</title>
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <style>
+        .checkout-box {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 48px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 48px;
+            padding: 0 16px;
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            font-family: 'Inter';
+        }
+
+        .form-input:focus {
+            outline-color: var(--color-accent-indigo);
+        }
+
+        .payment-option {
+            border: 1px solid var(--color-border);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .payment-option.active {
+            border-color: var(--color-accent-coral);
+            background: rgba(255, 111, 60, 0.05);
+        }
+    </style>
+</head>
+
+<body style="background: var(--color-bg-secondary);">
+
+    <div class="container" style="padding-top: 40px;">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <a href="{% url 'home' %}" style="display: flex; align-items: center; gap: 8px; justify-content: center;">
+                <span style="font-family: 'Poppins'; font-weight: 700; font-size: 24px;">Present Pickz</span>
+            </a>
+        </div>
+
+        <div class="checkout-box">
+            <h2 style="margin-bottom: 32px; text-align: center;">Pick Your Details</h2>
+
+            <form>
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mobile Number</label>
+                    <input type="tel" class="form-input" placeholder="10-digit mobile number">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Delivery Address</label>
+                    <textarea class="form-input" style="height: auto; padding-top: 12px;" rows="3"
+                        placeholder="Flat, Street, Area"></textarea>
+                </div>
+
+                <div style="margin-top: 40px; margin-bottom: 32px;">
+                    <h4 style="margin-bottom: 16px;">Payment Method</h4>
+                    <div class="payment-option active">
+                        <input type="radio" checked name="pay" style="accent-color: var(--color-accent-coral);">
+                        <span>UPI (Google Pay, PhonePe, Paytm)</span>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" name="pay" style="accent-color: var(--color-accent-coral);">
+                        <span>Cash on Delivery (COD)</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-full" style="height: 60px; font-size: 18px;">Place Your
+                    Order</button>
+            </form>
+
+            <p style="text-align: center; margin-top: 24px; color: var(--color-text-secondary); font-size: 14px;">
+                🔒 Secure 256-bit SSL encrypted checkout
+            </p>
+        </div>
+    </div>
+
+</body>
+
+</html>

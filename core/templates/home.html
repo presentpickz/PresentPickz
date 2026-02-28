@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Present Pickz | Premium Toys & Collectibles</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Design System -->
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+
+    <style>
+        /* Home Specific Overrides */
+        .category-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: #f8eff0;
+            border: 1px solid var(--color-border);
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .category-pill:hover {
+            border-color: var(--color-brand-primary);
+            color: var(--color-brand-primary);
+        }
+
+        .splash-overlay {
+            position: fixed;
+            inset: 0;
+            background: #f8eff0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .animate-up {
+            animation: fadeUp 0.8s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-overlay">
+        <div style="text-align: center;">
+            <img src="{% static 'images/brand_logo.jpg' %}" alt="Logo"
+                style="width: 80px; height: 80px; border-radius: 16px; margin: 0 auto 16px;">
+            <h2 style="font-size: 24px;">Present Pickz</h2>
+        </div>
+    </div>
+
+    <!-- Header / Navbar -->
+    <nav class="navbar">
+        <div class="container nav-row">
+            <!-- Left: Logo -->
+            <a href="{% url 'home' %}" class="nav-logo">
+                <img src="{% static 'images/brand_logo.jpg' %}" alt=""
+                    style="width: 32px; height: 32px; border-radius: 6px;">
+                <span>Present Pickz</span>
+            </a>
+
+            <!-- Center: Links -->
+            <div class="nav-links">
+                <a href="{% url 'home' %}" class="nav-link active">Home</a>
+                <a href="{% url 'product_list' %}" class="nav-link">New Arrivals</a>
+                <a href="{% url 'product_list' %}" class="nav-link">Best Sellers</a>
+                <a href="#collections" class="nav-link">Collections</a>
+            </div>
+
+            <!-- Right: Actions -->
+            <div class="nav-actions">
+                <a href="{% url 'cart' %}" class="btn btn-primary" style="padding: 10px 24px; font-size: 14px;">
+                    My Bag (0)
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Professional Hero -->
+    <header class="hero">
+        <div class="container hero-wrapper">
+            <div class="hero-text">
+                <span class="category-pill"
+                    style="margin-bottom: 24px; color: var(--color-brand-primary); border-color: rgba(255, 111, 60, 0.3);">
+                    New Season 2024
+                </span>
+                <h1 class="hero-headline">Curated Joy for Every Collector.</h1>
+                <p class="hero-sub">
+                    Explore a premium selection of designer toys, anime figures, and unique gifts. Hand-picked for
+                    quality, authenticated for peace of mind.
+                </p>
+                <div style="display: flex; gap: 16px;">
+                    <a href="{% url 'product_list' %}" class="btn btn-primary">Shop Collection</a>
+                    <a href="#featured" class="btn btn-outline">View Catalog</a>
+                </div>
+            </div>
+
+            <div class="hero-image-card">
+                <img src="{% static 'images/luffy_hero.jpg' %}" alt="Premium Figure"
+                    style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+        </div>
+    </header>
+
+    <!-- Trusted By / Categories -->
+    <div style="background: #f8eff0; border-bottom: 1px solid var(--color-border); padding: 24px 0;">
+        <div class="container"
+            style="display: flex; justify-content: space-between; align-items: center; overflow-x: auto; gap: 32px;">
+            <a href="#" class="category-pill">🎁 Gift Sets</a>
+            <a href="#" class="category-pill">🔥 Anime Figures</a>
+            <a href="#" class="category-pill">🏎️ Diecast Cars</a>
+            <a href="#" class="category-pill">🧸 Designer Toys</a>
+            <a href="#" class="category-pill">💎 Limited Edition</a>
+        </div>
+    </div>
+
+    <!-- Featured Products -->
+    <section class="section" id="featured" style="background: #f8eff0;">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: end; margin-bottom: 48px;">
+                <div>
+                    <h2 style="font-size: 32px; margin-bottom: 8px;">Trending Now</h2>
+                    <p style="color: var(--color-text-muted);">Top picks loved by our community</p>
+                </div>
+                <!-- Desktop Link -->
+                <a href="{% url 'product_list' %}"
+                    style="font-weight: 600; color: var(--color-brand-primary); display: flex; align-items: center; gap: 4px;">
+                    View All Picks &rarr;
+                </a>
+            </div>
+
+            <div class="grid-4">
+                {% for product in products %}
+                <div class="product-card" onclick="window.location.href='{% url 'product_detail' product.id %}'">
+                    <div class="card-image">
+                        <img src="{% static 'images/' %}{{ product.image }}" alt="{{ product.name }}">
+                        {% if product.badge %}
+                        <span
+                            style="position: absolute; top: 12px; left: 12px; background: white; padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; box-shadow: var(--shadow-sm);">
+                            {{ product.badge }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="card-details">
+                        <div style="font-size: 13px; color: var(--color-text-muted); margin-bottom: 4px;">Collection
+                        </div>
+                        <h3 class="card-title">{{ product.name }}</h3>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span class="card-price">₹{{ product.price }}</span>
+                            {% if product.original_price %}
+                            <span
+                                style="text-decoration: line-through; color: var(--color-text-muted); font-size: 14px;">₹{{
+                                product.original_price }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: #111; color: white; padding: 80px 0;">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 64px;">
+                <div>
+                    <h3 style="color: white; font-size: 24px; margin-bottom: 24px;">Present Pickz</h3>
+                    <p style="color: #888; max-width: 300px; line-height: 1.6;">
+                        Redefining the collecting experience with premium figures, authenticated toys, and joy-sparking
+                        gifts.
+                    </p>
+                </div>
+                <div>
+                    <h4 style="color: white; margin-bottom: 24px;">Shop</h4>
+                    <ul style="color: #888; display: flex; flex-direction: column; gap: 12px;">
+                        <li><a href="#">New Arrivals</a></li>
+                        <li><a href="#">Pre-orders</a></li>
+                        <li><a href="#">Sale</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: white; margin-bottom: 24px;">Support</h4>
+                    <ul style="color: #888; display: flex; flex-direction: column; gap: 12px;">
+                        <li><a href="#">Track Order</a></li>
+                        <li><a href="#">Shipping Policy</a></li>
+                        <li><a href="#">Returns</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div
+                style="border-top: 1px solid #333; margin-top: 64px; padding-top: 32px; text-align: center; color: #666; font-size: 14px;">
+                &copy; 2024 Present Pickz. Designed for Collectors.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Inline Splash Logic
+        (function () {
+            const splash = document.getElementById('splash-screen');
+            if (splash) {
+                // Ensure scroll is initially locked if needed, but let's be safe and allow default
+                setTimeout(() => {
+                    splash.style.opacity = '0';
+                    setTimeout(() => splash.style.display = 'none', 500);
+                }, 1500);
+            }
+        })();
+    </script>
+</body>
+
+</html>

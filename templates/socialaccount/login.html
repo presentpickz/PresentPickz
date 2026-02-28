@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 class="auth-title">{% trans "Connect via Google" %}</h2>
+            <p class="auth-subtitle">{% blocktrans with provider.name as provider_name %}You are about to sign using
+                your account from {{ provider_name }}.{% endblocktrans %}</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="cta-btn" style="width: 100%; border-radius: 12px; height: 50px;">{% trans
+                "Continue" %}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Bag | Present Pickz</title>
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="icon" type="image/jpg" href="{% static 'images/brand_logo.jpg' %}?v={% now 'U' %}">
+    <style>
+        .cart-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        @media (max-width: 991px) {
+            .cart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 20px;
+            padding: 24px;
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .item-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+            position: sticky;
+            top: 100px;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            background: white;
+            cursor: pointer;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="{% url 'home' %}" class="nav-logo">
+                <img src="{% static 'images/brand_logo.jpg' %}?v={% now 'U' %}" alt="Present Pickz"
+                    style="height: 40px; vertical-align: middle;">
+            </a>
+            <div class="nav-links">
+                <a href="{% url 'home' %}" class="nav-link">Home</a>
+                <a href="{% url 'product_list' %}" class="nav-link">Shop</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="section">
+        <div class="container">
+            <h1 style="margin-bottom: 40px;">Your Shopping Bag</h1>
+
+            <div class="cart-grid">
+                <div class="cart-items">
+                    {% for item in cart_items %}
+                    <div class="cart-item">
+                        <img src="{% static 'images/' %}{{ item.image }}" alt="{{ item.name }}" class="item-img">
+                        <div style="flex: 1;">
+                            <h4 style="margin-bottom: 4px;">{{ item.name }}</h4>
+                            <p style="color: var(--color-text-secondary); font-size: 14px; margin-bottom: 12px;">{{
+                                item.category }}</p>
+                            <span
+                                style="font-family: 'Poppins'; font-weight: 600; color: var(--color-accent-coral);">₹{{
+                                item.price }}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <button class="qty-btn">-</button>
+                            <span style="font-weight: 600;">{{ item.quantity }}</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="summary-card">
+                    <h3 style="margin-bottom: 24px;">Order Summary</h3>
+                    <div
+                        style="display: flex; justify-content: space-between; margin-bottom: 12px; color: var(--color-text-secondary);">
+                        <span>Subtotal</span>
+                        <span>₹{{ total_price|default:"5597" }}</span>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; margin-bottom: 12px; color: var(--color-text-secondary);">
+                        <span>Gift Wrap</span>
+                        <span>₹0</span>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--color-border); font-weight: 700; font-size: 20px;">
+                        <span>Total Price</span>
+                        <span>₹{{ total_price|default:"5597" }}</span>
+                    </div>
+                    <a href="{% url 'checkout' %}" class="btn btn-primary btn-full"
+                        style="margin-top: 32px; height: 54px;">Go to Checkout</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-bottom">
+            <p>&copy; 2024 Present Pickz. Safe and Happy shopping.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

@@ -1,0 +1,565 @@
+{% extends 'users/account/dashboard.html' %}
+{% load static %}
+
+{% block account_content %}
+<div class="account-header">
+    <h1>Edit Profile</h1>
+    <p class="subtitle">Update your personal information and profile photo</p>
+</div>
+
+<div class="profile-edit-container">
+    <!-- Profile Photo Section -->
+    <div class="profile-photo-section">
+        <div class="photo-header">
+            <h3><i class="fas fa-camera"></i> Profile Photo</h3>
+            <p>Add a photo to personalize your account</p>
+        </div>
+
+        <div class="photo-upload-area">
+            <div class="current-photo-wrapper">
+                {% if profile.profile_photo %}
+                <img src="{{ profile.profile_photo.url }}" alt="Profile Photo" id="profilePhotoPreview"
+                    class="profile-photo-img">
+                {% else %}
+                <div class="avatar-initials" id="avatarInitials">
+                    {{ user.first_name|slice:":1"|default:user.username|slice:":1"|upper }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="photo-actions">
+                <form id="photoUploadForm" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ photo_form.profile_photo }}
+                    <button type="button" class="btn-change-photo" id="changePhotoBtn">
+                        <i class="fas fa-camera"></i>
+                        <span>Change Photo</span>
+                    </button>
+                </form>
+
+                {% if profile.profile_photo %}
+                <button type="button" class="btn-remove-photo" id="removePhotoBtn">
+                    <i class="fas fa-trash-alt"></i>
+                    <span>Remove Photo</span>
+                </button>
+                {% endif %}
+            </div>
+
+            <div class="photo-info">
+                <i class="fas fa-info-circle"></i>
+                <span>JPG or PNG. Max size 2MB</span>
+            </div>
+
+            <div id="photoMessage" class="photo-message"></div>
+        </div>
+    </div>
+
+    <!-- Profile Information Form -->
+    <div class="profile-info-section">
+        <div class="section-header">
+            <h3><i class="fas fa-user"></i> Personal Information</h3>
+        </div>
+
+        <form method="post" class="profile-form">
+            {% csrf_token %}
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                    <span class="error-text">{{ form.first_name.errors.0 }}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                    <span class="error-text">{{ form.last_name.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email Address</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                <span class="error-text">{{ form.email.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" class="form-control" value="{{ user.username }}" readonly disabled>
+                <small class="form-hint">Username cannot be changed</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i>
+                    Update Profile
+                </button>
+                <a href="{% url 'users:password_change' %}" class="btn-secondary">
+                    <i class="fas fa-lock"></i>
+                    Change Password
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .profile-edit-container {
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        gap: 30px;
+        margin-top: 30px;
+    }
+
+    /* Profile Photo Section */
+    .profile-photo-section {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        border: 1px solid #e0e0e0;
+        height: fit-content;
+    }
+
+    .photo-header h3 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #1a202c;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .photo-header p {
+        color: #718096;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .photo-upload-area {
+        margin-top: 25px;
+    }
+
+    .current-photo-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .profile-photo-img {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #e2e8f0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .profile-photo-img:hover {
+        border-color: var(--primary);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .avatar-initials {
+        width: 160px;
+        height: 160px;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white;
+        font-size: 4rem;
+        font-weight: bold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .photo-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+
+    #photoUploadForm {
+        margin: 0;
+    }
+
+    .btn-change-photo,
+    .btn-remove-photo {
+        width: 100%;
+        padding: 14px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-change-photo {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-change-photo:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-remove-photo {
+        background: #fff;
+        color: #e53e3e;
+        border: 2px solid #fc8181;
+    }
+
+    .btn-remove-photo:hover {
+        background: #fff5f5;
+        border-color: #e53e3e;
+    }
+
+    .photo-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px;
+        background: #f7fafc;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        color: #4a5568;
+    }
+
+    .photo-info i {
+        color: var(--primary);
+    }
+
+    .photo-message {
+        margin-top: 15px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        display: none;
+    }
+
+    .photo-message.success {
+        background: #c6f6d5;
+        color: #22543d;
+        border: 1px solid #9ae6b4;
+        display: block;
+    }
+
+    .photo-message.error {
+        background: #fed7d7;
+        color: #742a2a;
+        border: 1px solid #fc8181;
+        display: block;
+    }
+
+    /* Profile Info Section */
+    .profile-info-section {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        border: 1px solid #e0e0e0;
+    }
+
+    .section-header h3 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #1a202c;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .profile-form {
+        max-width: 600px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #2d3748;
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        font-family: inherit;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+    }
+
+    .form-control:disabled {
+        background: #f7fafc;
+        color: #a0aec0;
+        cursor: not-allowed;
+    }
+
+    .form-hint {
+        display: block;
+        margin-top: 6px;
+        font-size: 0.85rem;
+        color: #718096;
+    }
+
+    .error-text {
+        display: block;
+        margin-top: 6px;
+        font-size: 0.85rem;
+        color: #e53e3e;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 14px 28px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+    }
+
+    .btn-secondary:hover {
+        background: var(--primary);
+        color: white;
+    }
+
+    @media (max-width: 992px) {
+        .profile-edit-container {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const changePhotoBtn = document.getElementById('changePhotoBtn');
+        const removePhotoBtn = document.getElementById('removePhotoBtn');
+        const photoInput = document.getElementById('profilePhotoInput');
+        const photoPreview = document.getElementById('profilePhotoPreview');
+        const avatarInitials = document.getElementById('avatarInitials');
+        const photoMessage = document.getElementById('photoMessage');
+
+        // Get CSRF token from cookie
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+        // Click change photo button to trigger file input
+        if (changePhotoBtn && photoInput) {
+            changePhotoBtn.addEventListener('click', function () {
+                photoInput.click();
+            });
+        }
+
+        // Handle file selection
+        if (photoInput) {
+            photoInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+
+                if (file) {
+                    // Validate file size (2MB)
+                    if (file.size > 2 * 1024 * 1024) {
+                        showMessage('File size must be less than 2MB', 'error');
+                        photoInput.value = '';
+                        return;
+                    }
+
+                    // Validate file type
+                    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                    if (!validTypes.includes(file.type)) {
+                        showMessage('Only JPG and PNG files are allowed', 'error');
+                        photoInput.value = '';
+                        return;
+                    }
+
+                    // Show preview
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        if (photoPreview) {
+                            photoPreview.src = event.target.result;
+                        } else if (avatarInitials) {
+                            // Replace initials with image
+                            const img = document.createElement('img');
+                            img.src = event.target.result;
+                            img.id = 'profilePhotoPreview';
+                            img.className = 'profile-photo-img';
+                            avatarInitials.parentNode.replaceChild(img, avatarInitials);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+
+                    // Upload photo
+                    uploadPhoto(file);
+                }
+            });
+        }
+
+        // Upload photo via AJAX
+        function uploadPhoto(file) {
+            const formData = new FormData();
+            formData.append('profile_photo', file);
+
+            fetch("{% url 'users:upload_profile_photo' %}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage(data.message, 'success');
+
+                        // Add remove button if it doesn't exist
+                        if (!removePhotoBtn) {
+                            location.reload(); // Reload to show remove button
+                        }
+                    } else {
+                        showMessage(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    showMessage('An error occurred while uploading the photo', 'error');
+                    console.error('Error:', error);
+                });
+        }
+
+        // Remove photo
+        if (removePhotoBtn) {
+            removePhotoBtn.addEventListener('click', function () {
+                if (confirm('Are you sure you want to remove your profile photo?')) {
+                    fetch("{% url 'users:delete_profile_photo' %}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrftoken,
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                showMessage(data.message, 'success');
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1000);
+                            } else {
+                                showMessage(data.message, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            showMessage('An error occurred while removing the photo', 'error');
+                            console.error('Error:', error);
+                        });
+                }
+            });
+        }
+
+        function showMessage(message, type) {
+            photoMessage.textContent = message;
+            photoMessage.className = 'photo-message ' + type;
+
+            setTimeout(() => {
+                photoMessage.className = 'photo-message';
+            }, 5000);
+        }
+    });
+</script>
+{% endblock %}

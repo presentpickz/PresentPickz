@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout - Present Pickz{% endblock %}
+
+{% block extra_css %}
+<style>
+    .checkout-container {
+        padding: 4rem 0;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .checkout-form {
+        background: white;
+        padding: 2.5rem;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-md);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--dark);
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: var(--radius-sm);
+        font-family: var(--font-body);
+        font-size: 1rem;
+        transition: var(--transition);
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(255, 51, 102, 0.1);
+    }
+
+    .payment-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .payment-option-label {
+        border: 2px solid #ddd;
+        padding: 1rem;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        text-align: center;
+        transition: var(--transition);
+        font-weight: 600;
+    }
+
+    .payment-option-input:checked+.payment-option-label {
+        border-color: var(--primary);
+        background: #fff5f7;
+        color: var(--primary);
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 1rem;
+        background: var(--dark);
+        color: white;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-top: 2rem;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .submit-btn:hover {
+        background: var(--primary);
+    }
+
+    .submit-btn:disabled {
+        background: var(--gray);
+        cursor: not-allowed;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container checkout-container">
+    <div class="checkout-form">
+        <h2 style="margin-bottom: 2rem; text-align: center;">Secure Checkout</h2>
+        <div style="text-align: center; margin-bottom: 2rem; font-size: 1.2rem; font-weight: 600;">
+            Total to Pay: <span style="color: var(--primary);">₹{{ total }}</span>
+        </div>
+
+        <form method="POST" action="{% url 'orders:place_order' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="full_name" class="form-control" required placeholder="John Doe">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Mobile Number</label>
+                <input type="tel" name="mobile" class="form-control" required placeholder="9876543210"
+                    pattern="[0-9]{10}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Address (Optional)</label>
+                <input type="email" name="email" class="form-control" placeholder="john@example.com">
+            </div>
+
+            <div class="form-row" style="display: flex; gap: 1rem;">
+                <div class="form-group" style="flex: 1;">
+                    <label class="form-label">Delivery Pincode</label>
+                    <input type="text" name="pincode" id="pincode" class="form-control" required placeholder="110001"
+                        pattern="[0-9]{6}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Shipping Address</label>
+                <textarea name="address" class="form-control" rows="3" required
+                    placeholder="Flat No, Street, City"></textarea>
+            </div>
+
+            <!-- Gift Wrap Section -->
+            <div class="gift-section"
+                style="background: #fff5f7; padding: 1.5rem; border-radius: 8px; border: 1px dashed var(--primary); margin-bottom: 1.5rem;">
+                <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                    <input type="checkbox" name="gift_wrap" id="gift_wrap_checkbox">
+                    <span>Add Gift Wrap (₹100)</span>
+                </label>
+
+                <textarea name="gift_message" id="gift_message" class="form-control mt-2" rows="2"
+                    placeholder="Write your gift message (optional)" disabled></textarea>
+            </div>
+
+            <!-- Price Breakdown -->
+            <div class="price-summary mb-4" style="background: #f9f9f9; padding: 1rem; border-radius: 8px;">
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal</span>
+                    <span>₹<span id="summary-subtotal">{{ total }}</span></span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Packing/Gift Wrap</span>
+                    <span>₹<span id="summary-packing">0</span></span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Delivery Charge</span>
+                    <span>₹<span id="summary-delivery">{% if total >= 999 %}0{% else %}50{% endif %}</span></span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between font-weight-bold"
+                    style="font-size: 1.1rem; color: var(--dark);">
+                    <span>Total Payable</span>
+                    <span>₹<span id="summary-total">{{ total }}</span></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Payment Method</label>
+                <div class="payment-options">
+                    <div>
+                        <input type="radio" name="payment" id="upi" value="UPI" class="payment-option-input"
+                            style="display: none;" checked>
+                        <label for="upi" class="payment-option-label">
+                            <i class="fas fa-qrcode"></i> UPI
+                        </label>
+                    </div>
+                    <div>
+                        <input type="radio" name="payment" id="cod" value="COD" class="payment-option-input"
+                            style="display: none;">
+                        <label for="cod" class="payment-option-label">
+                            <i class="fas fa-money-bill-wave"></i> COD
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="place-order-btn">Place Order</button>
+        </form>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const subtotal = parseFloat('{{ total }}');
+                const giftCheckbox = document.getElementById('gift_wrap_checkbox');
+                const giftMessage = document.getElementById('gift_message');
+                const packingSpan = document.getElementById('summary-packing');
+                const deliverySpan = document.getElementById('summary-delivery');
+                const totalSpan = document.getElementById('summary-total');
+                const mainTotalSpan = document.querySelector('.checkout-form h2 + div span'); // Total at top
+
+                // Initial Delivery Logic (match server fallback)
+                let deliveryCharge = subtotal >= 999 ? 0 : 50;
+
+                function updateTotals() {
+                    const isGift = giftCheckbox.checked;
+                    const packingCharge = isGift ? 100 : 0;
+
+                    // Toggle textarea
+                    giftMessage.disabled = !isGift;
+                    if (!isGift) giftMessage.value = '';
+
+                    // Update spans
+                    packingSpan.textContent = packingCharge;
+
+                    const grandTotal = subtotal + deliveryCharge + packingCharge;
+                    totalSpan.textContent = grandTotal.toFixed(2);
+
+                    // Update top total logic requires simpler selector or removal
+                    // But we won't break if selector fails
+                }
+
+                giftCheckbox.addEventListener('change', updateTotals);
+
+                // Pincode logic (optional placeholder for AJAX)
+                const pincodeInput = document.getElementById('pincode');
+                pincodeInput.addEventListener('change', function () {
+                    // In a real app, call API to check delivery charge for this pincode
+                    // For now, we stick to standard logic
+                });
+
+                // Run once
+                updateTotals();
+            });
+        </script>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your Cart - Present Pickz{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cart-container {
+        padding: 4rem 0;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .cart-header {
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .cart-item {
+        display: grid;
+        grid-template-columns: 100px 2fr 1fr 1fr 50px;
+        gap: 1.5rem;
+        align-items: center;
+        background: white;
+        padding: 1.5rem;
+        border-radius: var(--radius-sm);
+        margin-bottom: 1rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .cart-item img {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        border-radius: var(--radius-sm);
+    }
+
+    .item-details h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .item-meta {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #f8f9fa;
+        padding: 0.25rem;
+        border-radius: 4px;
+        width: fit-content;
+    }
+
+    .qty-btn {
+        border: none;
+        background: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .qty-btn:hover {
+        background: var(--primary);
+        color: white;
+    }
+
+    .remove-btn {
+        color: #ff4444;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        transition: var(--transition);
+    }
+
+    .remove-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .cart-summary {
+        background: white;
+        padding: 2rem;
+        border-radius: var(--radius-sm);
+        margin-top: 3rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+    }
+
+    .summary-row.total {
+        border-top: 2px solid #eee;
+        padding-top: 1rem;
+        font-weight: 700;
+        font-size: 1.3rem;
+        color: var(--dark);
+    }
+
+    .checkout-btn {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+        background: var(--dark);
+        color: white;
+        text-align: center;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        margin-top: 1.5rem;
+        transition: var(--transition);
+    }
+
+    .checkout-btn:hover {
+        background: var(--primary);
+    }
+
+    .empty-cart {
+        text-align: center;
+        padding: 4rem 0;
+    }
+
+    .empty-cart i {
+        font-size: 4rem;
+        color: var(--gray);
+        margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .cart-item {
+            grid-template-columns: 80px 1fr;
+            grid-template-areas:
+                "img details"
+                "qty price"
+                "remove remove";
+            gap: 1rem;
+        }
+
+        .cart-item img {
+            grid-area: img;
+        }
+
+        .item-details {
+            grid-area: details;
+        }
+
+        .quantity-controls {
+            grid-area: qty;
+        }
+
+        .item-price {
+            grid-area: price;
+            text-align: right;
+        }
+
+        .remove-btn {
+            grid-area: remove;
+            width: 100%;
+            text-align: right;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container cart-container">
+    <h1 class="cart-header">Shopping Cart</h1>
+
+    {% if cart_items %}
+    <div class="cart-items">
+        {% for item in cart_items %}
+        <div class="cart-item">
+            <img src="{{ item.image }}" alt="{{ item.name }}">
+            <div class="item-details">
+                <h3>{{ item.name }}</h3>
+                {% if item.gift_wrap %}
+                <p class="item-meta"><i class="fas fa-gift"></i> Gift Wrapped (+₹50)</p>
+                {% endif %}
+            </div>
+
+            <form action="{% url 'cart:update_cart' item.id %}" method="POST" class="quantity-controls">
+                {% csrf_token %}
+                <button type="submit" name="action" value="decrement" class="qty-btn">-</button>
+                <span>{{ item.quantity }}</span>
+                <button type="submit" name="action" value="increment" class="qty-btn">+</button>
+            </form>
+
+            <div class="item-price">₹{{ item.subtotal }}</div>
+
+            <form action="{% url 'cart:update_cart' item.id %}" method="POST" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" name="action" value="remove" class="remove-btn">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="cart-summary">
+        <div class="summary-row total">
+            <span>Total</span>
+            <span>₹{{ total }}</span>
+        </div>
+        <a href="{% url 'cart:checkout' %}" class="checkout-btn">Proceed to Checkout</a>
+    </div>
+
+    {% else %}
+    <div class="empty-cart">
+        <i class="fas fa-shopping-basket"></i>
+        <h2>Your cart is empty</h2>
+        <p>Looks like you haven't added any gifts yet.</p>
+        <a href="{% url 'products:product_list' %}" class="checkout-btn"
+            style="max-width: 200px; margin: 2rem auto;">Start Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

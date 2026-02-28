@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Rate & Review - Order #{{ order.order_id }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 4rem 0;">
+    <h1 class="mb-4">Rate & Review Products</h1>
+    <p class="text-muted mb-5">Order #{{ order.order_id }} • Delivered on {{ order.updated_at|date:"d M, Y" }}</p>
+
+    <div class="review-grid" style="display: grid; gap: 2rem;">
+        {% for item in order.items.all %}
+        <div class="review-card"
+            style="background: white; padding: 2rem; border-radius: var(--radius-md); border: 1px solid #eee; display: flex; gap: 2rem; align-items: start; flex-wrap: wrap;">
+            <!-- Product Image -->
+            <div
+                style="width: 100px; height: 100px; background: #f8f9fa; border-radius: 8px; overflow: hidden; flex-shrink: 0;">
+                <img src="{{ item.product.get_image_url }}" alt="{{ item.product.name }}"
+                    style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+
+            <!-- Review Form -->
+            <div style="flex: 1; min-width: 300px;">
+                <h3 style="margin-bottom: 0.5rem;"><a href="{% url 'products:product_detail' item.product.id %}"
+                        style="color: inherit; text-decoration: none;">{{ item.product.name }}</a></h3>
+                <p class="text-muted small mb-4">Quantity: {{ item.quantity }} • Price: ₹{{ item.price }}</p>
+
+                {% if item.is_reviewed %}
+                <div class="alert alert-success"
+                    style="background: #f0fff4; color: #2f855a; padding: 1rem; border-radius: 8px; border: 1px solid #9ae6b4; display: inline-block;">
+                    <i class="fas fa-check-circle"></i> Thanks! You have reviewed this product.
+                </div>
+                {% else %}
+                <form action="{% url 'orders:submit_review' order.order_id item.product.id %}" method="POST">
+                    {% csrf_token %}
+
+                    <div class="rating-group mb-3">
+                        <label class="d-block mb-2 font-weight-bold">Your Rating</label>
+                        <div class="star-rating"
+                            style="display: flex; gap: 0.5rem; flex-direction: row-reverse; justify-content: flex-end;">
+                            <input type="radio" id="star5-{{ item.id }}" name="rating" value="5" class="d-none"><label
+                                for="star5-{{ item.id }}"><i class="fas fa-star fa-2x"></i></label>
+                            <input type="radio" id="star4-{{ item.id }}" name="rating" value="4" class="d-none"><label
+                                for="star4-{{ item.id }}"><i class="fas fa-star fa-2x"></i></label>
+                            <input type="radio" id="star3-{{ item.id }}" name="rating" value="3" class="d-none"><label
+                                for="star3-{{ item.id }}"><i class="fas fa-star fa-2x"></i></label>
+                            <input type="radio" id="star2-{{ item.id }}" name="rating" value="2" class="d-none"><label
+                                for="star2-{{ item.id }}"><i class="fas fa-star fa-2x"></i></label>
+                            <input type="radio" id="star1-{{ item.id }}" name="rating" value="1" class="d-none"><label
+                                for="star1-{{ item.id }}"><i class="fas fa-star fa-2x"></i></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="d-block mb-2 font-weight-bold">Your Review</label>
+                        <textarea name="comment" rows="3" class="form-control"
+                            placeholder="What did you like or dislike?"
+                            style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid #ddd;"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary"
+                        style="background: var(--dark); color: white; border: none; padding: 0.8rem 2rem; border-radius: 50px; cursor: pointer;">
+                        Submit Review
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .star-rating input:checked~label,
+    .star-rating label:hover,
+    .star-rating label:hover~label {
+        color: #f59e0b;
+    }
+
+    .star-rating label {
+        color: #ddd;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Environment Variables (SECRETS - NEVER PUSH)
+.env
+
+# Database
+db.sqlite3
+db.sqlite3-journal
+
+# Static Files (collected)
+staticfiles/
+
+# Media uploads (user-generated content)
+media/profile_photos/*
+!media/profile_photos/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Debug/Test scripts
+debug_users.py
+delete_user.py
+fix_user.py
+fresh_start.py
+user_list.txt
+
+# Documentation (not needed in production)
+AUTH_IMPLEMENTATION_SUMMARY.md
+CSRF_FIXES_SUMMARY.md
+CSRF_TROUBLESHOOTING.md
+FINAL_AUTH_STATUS.md
+HIGH_FIDELITY_AUTH_DOCUMENTATION.md
+PROJECT_STATUS.md
+QUICK_REFERENCE.md
+README_AUTH_COMPLETE.md
+STATUS.md
+STATUS_AUTH.md
+SYSTEM_DIAGRAM.txt
+TESTING_GUIDE.md
+
+# Antigravity
+.gemini/

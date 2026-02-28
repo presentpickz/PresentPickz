@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Rate & Review - {{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0 rounded-lg">
+                <div class="card-body p-5">
+                    <h3 class="mb-4 text-center">Rate & Review</h3>
+
+                    <div class="product-preview mb-4 text-center">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                            style="height: 100px; object-fit: contain; border-radius: 8px;">
+                        {% endif %}
+                        <h5 class="mt-3">{{ product.name }}</h5>
+                        <p class="text-muted small">Order #{{ order.order_id }}</p>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="form-group mb-4">
+                            <label class="font-weight-bold mb-2">Rating</label>
+                            <select name="rating" required class="form-control custom-select" style="height: 50px;">
+                                <option value="">Select Rating</option>
+                                <option value="5">★★★★★ Excellent (5/5)</option>
+                                <option value="4">★★★★☆ Good (4/5)</option>
+                                <option value="3">★★★☆☆ Average (3/5)</option>
+                                <option value="2">★★☆☆☆ Poor (2/5)</option>
+                                <option value="1">★☆☆☆☆ Very Bad (1/5)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="font-weight-bold mb-2">Your Review</label>
+                            <textarea name="comment" maxlength="500" required class="form-control" rows="5"
+                                placeholder="Share your experience with this product..."></textarea>
+                            <small class="text-muted">Max 500 characters</small>
+                        </div>
+
+                        <button type="submit" class="cta-btn btn-block w-100">Submit Review</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .custom-select {
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        padding: 0 1rem;
+        background-color: #f9f9f9;
+        font-size: 1rem;
+    }
+
+    textarea.form-control {
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+        resize: none;
+        padding: 1rem;
+    }
+
+    textarea.form-control:focus,
+    .custom-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(183, 110, 121, 0.1);
+        background-color: #fff;
+    }
+</style>
+{% endblock %}

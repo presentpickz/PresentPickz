@@ -1,0 +1,412 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Present Pickz{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/wishlist.css' %}">
+<style>
+    .product-detail-container {
+        padding: 4rem 0;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: start;
+    }
+
+    /* Gallery */
+    .gallery-container {
+        position: sticky;
+        top: 100px;
+    }
+
+    .main-image-frame {
+        width: 100%;
+        aspect-ratio: 1;
+        background: #f8f9fa;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        margin-bottom: 1rem;
+        cursor: zoom-in;
+    }
+
+    .main-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+        will-change: transform;
+    }
+
+    @media (hover: hover) {
+        .main-image:hover {
+            transform: scale(1.5);
+        }
+    }
+
+    .thumbnails {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+    }
+
+    .thumb {
+        width: 80px;
+        height: 80px;
+        border-radius: var(--radius-sm);
+        object-fit: cover;
+        cursor: pointer;
+        opacity: 0.6;
+        transition: var(--transition);
+        border: 2px solid transparent;
+    }
+
+    .thumb:hover,
+    .thumb.active {
+        opacity: 1;
+        border-color: var(--primary);
+    }
+
+    /* Info */
+    .product-info-col h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .detail-price {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin: 1rem 0 2rem;
+    }
+
+    .detail-price .original {
+        font-size: 1.2rem;
+        color: var(--gray);
+        text-decoration: line-through;
+        margin-left: 1rem;
+    }
+
+    .stock-status {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        background: #e6fffa;
+        color: #047481;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+
+    .description {
+        color: var(--text-muted);
+        line-height: 1.8;
+        margin-bottom: 2rem;
+    }
+
+    .actions {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .add-to-cart-btn {
+        flex: 1;
+        background: var(--dark);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .add-to-cart-btn:hover {
+        background: var(--primary);
+        transform: translateY(-2px);
+    }
+
+    .gift-options {
+        background: #fff5f7;
+        padding: 1.5rem;
+        border-radius: var(--radius-sm);
+        margin-top: 2rem;
+    }
+
+    .gift-options h4 {
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .product-detail-container {
+            padding: 1rem 1rem 6rem;
+        }
+
+        .detail-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .product-info-col h1 {
+            font-size: 1.8rem;
+        }
+
+        .detail-price {
+            font-size: 1.8rem;
+            margin: 0.5rem 0 1.5rem;
+        }
+
+        .gallery-container {
+            position: relative;
+            top: 0;
+            margin-bottom: 2rem;
+        }
+
+        .main-image-frame {
+            max-width: 85%;
+            margin: 0 auto 1.5rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .thumbnails {
+            justify-content: center;
+        }
+
+        /* Sticky Mobile Action Bar */
+        .mobile-sticky-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            padding: 1rem;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 1rem;
+            z-index: 1000;
+            border-top: 1px solid #eee;
+        }
+
+        .mobile-sticky-actions .add-to-cart-btn {
+            margin-bottom: 0;
+        }
+
+        .desktop-actions {
+            display: none !important;
+        }
+    }
+
+    @media (min-width: 769px) {
+        .mobile-sticky-actions {
+            display: none !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container product-detail-container">
+    <div class="detail-grid">
+        <!-- Gallery -->
+        <div class="gallery-container">
+            <div class="main-image-frame" id="mainImageContainer">
+                <img src="{{ product.get_image_url }}" alt="{{ product.name }}" class="main-image" id="mainImage"
+                    decoding="async">
+            </div>
+            <div class="thumbnails">
+                <img src="{{ product.get_image_url }}" class="thumb active" onclick="changeImage(this)">
+                {% for gallery_img in product.gallery_images.all %}
+                <img src="{{ gallery_img.image.url }}" class="thumb" onclick="changeImage(this)"
+                    alt="{{ gallery_img.alt_text|default:product.name }}">
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Info -->
+        <div class="product-info-col">
+            <div class="stock-status">In Stock</div>
+            <h1>{{ product.name }}</h1>
+            {% if product.average_rating %}
+            <div class="rating-display mb-2" style="color: #f59e0b; display: flex; align-items: center; gap: 0.5rem;">
+                <span class="stars">
+                    <i class="fas fa-star"></i> {{ product.average_rating }}
+                </span>
+                <span class="text-muted small">({{ product.review_count }} reviews)</span>
+            </div>
+            {% endif %}
+            <div class="detail-price">
+                ₹{{ product.price }}
+                {% if product.original_price %}
+                <span class="original">₹{{ product.original_price }}</span>
+                {% endif %}
+            </div>
+
+            <p class="description">{{ product.description }}</p>
+
+            <form action="{% url 'cart:add_to_cart' product.id %}" method="POST">
+                {% csrf_token %}
+                <div class="actions desktop-actions">
+                    <!-- Add to Cart Button -->
+                    <button type="submit" class="add-to-cart-btn">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                </div>
+
+                <!-- Mobile Sticky Bar -->
+                <div class="mobile-sticky-actions">
+                    <button type="submit" class="add-to-cart-btn"
+                        style="background: white; color: var(--dark); border: 1px solid var(--dark); flex: 1;">
+                        Add to Cart
+                    </button>
+                    <button type="submit" name="buy_now" value="true" class="add-to-cart-btn"
+                        style="flex: 1.5; background: var(--primary);">
+                        Buy Now
+                    </button>
+                </div>
+
+                <div class="trust-badges mt-4"
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1.5rem; background: #fdf2f8; border-radius: 12px;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 500;">
+                        <i class="fas fa-truck-fast" style="color: var(--primary);"></i> Free Delivery
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 500;">
+                        <i class="fas fa-shield-halved" style="color: var(--primary);"></i> Secure Payment
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 500;">
+                        <i class="fas fa-rotate-left" style="color: var(--primary);"></i> 7-Day Returns
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 500;">
+                        <i class="fas fa-gift" style="color: var(--primary);"></i> Gift Ready
+                    </div>
+                </div>
+
+                <div class="gift-options">
+                    <h4><i class="fas fa-gift" style="color: var(--primary)"></i> Gift Options</h4>
+                    <label
+                        style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; margin-bottom: 1rem;">
+                        <input type="checkbox" name="gift_wrap"> Add Premium Gift Wrap (+₹50)
+                    </label>
+                    <input type="text" name="gift_message" placeholder="Add a personal message..."
+                        style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="reviews-section mt-5 pt-5">
+        <h3 class="mb-4">Customer Reviews ({{ reviews.count }})</h3>
+
+        {% if reviews %}
+        <div class="reviews-grid">
+            {% for review in reviews %}
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="reviewer-avatar">
+                        {{ review.user.username|slice:":1"|upper }}
+                    </div>
+                    <div class="reviewer-info">
+                        <strong>{{ review.user.username }}</strong>
+                        <div class="review-meta">
+                            <span class="stars" style="color: #f59e0b;">{{ review.get_star_display }}</span>
+                            <span class="date text-muted ml-2">{{ review.created_at|date:"d M, Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="review-content mt-3">
+                    <p>{{ review.comment }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-reviews text-center py-5 bg-light rounded">
+            <i class="far fa-star fa-3x text-muted mb-3"></i>
+            <p class="text-muted">No reviews yet. Be the first to review this product!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .reviews-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .review-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid #f0f0f0;
+        transition: transform 0.2s;
+    }
+
+    .review-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .review-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .reviewer-avatar {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .reviewer-info strong {
+        display: block;
+        font-size: 0.95rem;
+    }
+
+    .review-meta {
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function changeImage(thumb) {
+        document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+        thumb.classList.add('active');
+        document.getElementById('mainImage').src = thumb.src;
+    }
+
+    // Zoom effect
+    const container = document.getElementById('mainImageContainer');
+    const img = document.getElementById('mainImage');
+
+    container.addEventListener('mousemove', (e) => {
+        const { left, top, width, height } = container.getBoundingClientRect();
+        const x = (e.clientX - left) / width * 100;
+        const y = (e.clientY - top) / height * 100;
+
+        img.style.transformOrigin = `${x}% ${y}%`;
+    });
+</script>
+{% endblock %}

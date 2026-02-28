@@ -1,0 +1,565 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Present Pickz - Gifts & Collectibles{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Prevent ANY white flash */
+    html {
+        background: #faf6f3 !important;
+    }
+
+    body {
+        /* Match splash screen background */
+        background: radial-gradient(ellipse at center,
+                #faf6f3 0%,
+                #f8f3f0 100%) !important;
+    }
+
+
+    /* Hero Section */
+    .hero {
+        position: relative;
+        height: 80vh;
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .hero-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 0;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        /* Dark overlay for text readability */
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        /* Sit above video */
+        max-width: 800px;
+        margin-left: 10%;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 768px) {
+        .hero-content {
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            background: rgba(0, 0, 0, 0.6);
+            /* Darker solid background for readability */
+        }
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        color: #ffffff;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        animation: fadeInUp 1s ease;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        color: #f0f0f0;
+        margin-bottom: 2.5rem;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        animation: fadeInUp 1s ease 0.2s backwards;
+    }
+
+    .cta-btn {
+        display: inline-block;
+        padding: 1rem 3rem;
+        background: var(--primary);
+        color: white;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: var(--transition);
+        box-shadow: 0 10px 20px rgba(255, 51, 102, 0.3);
+        animation: fadeInUp 1s ease 0.4s backwards;
+    }
+
+    .cta-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(255, 51, 102, 0.4);
+    }
+
+    /* Sections */
+    .section {
+        padding: 6rem 0;
+    }
+
+    .section-header {
+        margin-bottom: 4rem;
+        text-align: center;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Carousel */
+    .carousel-container {
+        overflow-x: auto;
+        padding-bottom: 2rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .carousel-container::-webkit-scrollbar {
+        display: none;
+    }
+
+    .carousel-track {
+        display: flex;
+        gap: 2rem;
+        padding: 1rem;
+        width: max-content;
+    }
+
+    .product-card-mini {
+        width: 280px;
+        flex-shrink: 0;
+        background: #f8eff0;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        transition: var(--transition);
+        border: 1px solid #f0f0f0;
+    }
+
+    .product-card-mini:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    /* Categories */
+    .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .category-card {
+        height: 400px;
+        position: relative;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        cursor: pointer;
+        background: #f8eff0;
+    }
+
+    .category-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 2rem;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+        color: white;
+        transform: translateY(20px);
+        transition: var(--transition);
+    }
+
+    .category-card:hover .category-content {
+        transform: translateY(0);
+    }
+
+    /* Gift Experience */
+    .gift-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3rem;
+        text-align: center;
+    }
+
+    .gift-feature i {
+        font-size: 3rem;
+        color: var(--secondary);
+        margin-bottom: 1.5rem;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .featured-collection {
+        background: var(--dark);
+        color: white;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+    }
+
+    .featured-text {
+        padding: 4rem;
+    }
+
+    .featured-image-container {
+        height: 500px;
+        background: #2a2a2a;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .featured-gradient {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, var(--dark) 0%, transparent 50%);
+    }
+
+    @media (max-width: 768px) {
+
+        /* Hero Mobile Responsiveness */
+        .hero-content {
+            margin-left: 0;
+            padding: 2rem 1.5rem;
+            width: 90%;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+
+        .hero {
+            height: auto;
+            min-height: 500px;
+            padding: 4rem 0;
+        }
+
+        .featured-collection {
+            grid-template-columns: 1fr;
+        }
+
+        .featured-text {
+            padding: 2.5rem 2rem;
+            text-align: center;
+            order: 1;
+            /* Ensure text is first */
+        }
+
+        .featured-text .cta-btn {
+            width: 100%;
+            text-align: center;
+        }
+
+        .featured-image-container {
+            height: 250px;
+            order: 2;
+            /* Image second */
+        }
+
+        .featured-gradient {
+            background: linear-gradient(180deg, var(--dark) 0%, transparent 50%);
+        }
+    }
+
+    /* Mobile Hero Search Styling */
+    .mobile-hero-search {
+        margin-bottom: 2rem;
+        width: 100%;
+    }
+
+    .hero-search-form {
+        display: flex;
+        background: white;
+        padding: 4px;
+        border-radius: 50px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-search-form input {
+        flex: 1;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        outline: none;
+        background: transparent;
+        border-radius: 50px 0 0 50px;
+    }
+
+    .hero-search-form button {
+        background: var(--primary);
+        color: white;
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-search-form button:hover {
+        background: var(--primary-dark);
+        transform: scale(1.05);
+    }
+
+    @media (min-width: 769px) {
+        .mobile-hero-search {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero">
+    <!-- Video Background -->
+    <video autoplay muted loop playsinline preload="metadata" class="hero-video">
+        <source src="{% static 'videos/hero_video.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+        <h1 class="hero-title">Unbox Happiness Today</h1>
+        <p class="hero-subtitle">Premium collectibles, toys, and gifts curated for the young and young at heart.</p>
+        <a href="{% url 'products:product_list' %}" class="cta-btn">Shop New Arrivals</a>
+    </div>
+</section>
+
+<!-- New Arrivals -->
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Fresh Drops</h2>
+            <p>Be the first to own our latest additions</p>
+        </div>
+
+        <div class="carousel-container">
+            <div class="carousel-track">
+                {% for product in new_arrivals %}
+                <a href="{% url 'products:product_detail' product.id %}" class="product-card-mini">
+                    <div
+                        style="height: 280px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                        <img src="{{ product.get_image_url }}" alt="{{ product.name }}" loading="lazy" decoding="async"
+                            style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="padding: 1.5rem;">
+                        <span style="font-size: 0.8rem; color: var(--primary); font-weight: 700;">NEW</span>
+                        <h4 style="margin: 0.5rem 0;">{{ product.name }}</h4>
+                        <div style="font-weight: 700;">₹{{ product.price }}</div>
+                    </div>
+                </a>
+                {% empty %}
+                <div style="text-align: center; width: 100%; padding: 2rem;">
+                    <p>New arrivals coming soon!</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+<div style="height: 4rem;"></div> <!-- Spacer to prevent overlap -->
+
+<!-- Browse Collections -->
+<section class="section" style="background: #f8eff0; padding-top: 5rem; margin-top: 0;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Browse Collections</h2>
+            <p>Explore our curated categories of premium gifts and collectibles</p>
+        </div>
+        <div class="category-grid">
+            {% for category in categories %}
+            <a href="{% url 'products:product_list' %}?category={{ category.slug }}" class="category-card">
+                <img src="{% if category.image %}{{ category.image.url }}{% else %}{% static 'images/category_placeholder.jpg' %}{% endif %}"
+                    alt="{{ category.name }}" loading="lazy" decoding="async"
+                    style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8);">
+                <div class="category-content">
+                    <h3>{{ category.name }}</h3>
+                    <p>Discover amazing {{ category.name|lower }} <i class="fas fa-arrow-right"></i></p>
+                </div>
+            </a>
+            {% empty %}
+            <!-- Fallback categories if none in database -->
+            <a href="{% url 'products:product_list' %}?category=anime" class="category-card">
+                <img src="{% static 'images/asuka_figure.jpg' %}" alt="Anime"
+                    style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8);">
+                <div class="category-content">
+                    <h3>Anime Figures</h3>
+                    <p>Premium collectibles <i class="fas fa-arrow-right"></i></p>
+                </div>
+            </a>
+            <a href="{% url 'products:product_list' %}?category=toys" class="category-card">
+                <img src="{% static 'images/toy_placeholder.jpg' %}" alt="Toys"
+                    style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8);">
+                <div class="category-content">
+                    <h3>Toys & Games</h3>
+                    <p>Fun for all ages <i class="fas fa-arrow-right"></i></p>
+                </div>
+            </a>
+            <a href="{% url 'products:product_list' %}?category=collectibles" class="category-card">
+                <img src="{% static 'images/collectible_placeholder.jpg' %}" alt="Collectibles"
+                    style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8);">
+                <div class="category-content">
+                    <h3>Collectibles</h3>
+                    <p>Limited editions <i class="fas fa-arrow-right"></i></p>
+                </div>
+            </a>
+            <a href="{% url 'products:product_list' %}?category=gifts" class="category-card">
+                <img src="{% static 'images/gift_placeholder.jpg' %}" alt="Gifts"
+                    style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8);">
+                <div class="category-content">
+                    <h3>Premium Gifts</h3>
+                    <p>Special moments <i class="fas fa-arrow-right"></i></p>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Additional Spacer -->
+<div style="height: 2rem;"></div>
+
+<!-- Customer Customer Reviews -->
+<section class="section" style="background: #f8eff0;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Loved by Givers</h2>
+            <p>Real stories from our happy customers</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            {% for review in loved_reviews %}
+            <div
+                style="background: var(--light); padding: 2rem; border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.05);">
+                <div style="color: var(--accent); margin-bottom: 1rem;">
+                    <!-- Show 5 stars for all loved reviews since we filtered for rating=5 -->
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                        class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <p style="font-style: italic; margin-bottom: 2rem; color: var(--text-muted);">
+                    "{{ review.comment|truncatechars:150 }}"
+                </p>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div
+                        style="width: 40px; height: 40px; background: #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--text-muted);">
+                        {% if review.user.first_name %}
+                        {{ review.user.first_name|slice:":1"|upper }}{{ review.user.last_name|slice:":1"|upper }}
+                        {% else %}
+                        {{ review.user.username|slice:":2"|upper }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h4 style="font-size: 1rem; margin: 0;">
+                            {% if review.user.first_name %}
+                            {{ review.user.first_name }} {{ review.user.last_name|slice:":1" }}.
+                            {% else %}
+                            {{ review.user.username }}
+                            {% endif %}
+                        </h4>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Verified Buyer</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Fallback if no 5-star reviews exist yet -->
+            <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                <i class="fas fa-heart" style="font-size: 3rem; color: #ffe4e6; margin-bottom: 1rem;"></i>
+                <h3 style="color: var(--text-muted);">Be the first to leave a 5-star review!</h3>
+                <p style="color: #6c757d;">We love hearing from our happy customers.</p>
+                <a href="{% url 'products:product_list' %}" class="btn"
+                    style="background: var(--primary); color: white; padding: 0.5rem 1.5rem; border-radius: 50px; text-decoration: none; margin-top: 1rem; display: inline-block;">Shop
+                    Now</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Collection -->
+<section class="section">
+    <div class="container">
+        <div class="featured-collection">
+            <div class="featured-text">
+                <span style="color: var(--accent); font-weight: 700; letter-spacing: 2px;">LIMITED EDITION</span>
+                <h2 style="font-size: 3rem; color: white; margin: 1rem 0;">The Anime Collection</h2>
+                <p style="color: #aaa; margin-bottom: 2rem;">Detailed craftsmanship meets iconic design. Discover our
+                    premium range of imported figures.</p>
+                <a href="{% url 'products:product_list' %}?category=anime" class="cta-btn"
+                    style="background: #f8eff0; color: var(--dark);">Explore Collection</a>
+            </div>
+            <div class="featured-image-container">
+                <img src="{% static 'images/asuka_figure.jpg' %}" alt="Anime Collection"
+                    style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.9);">
+                <div class="featured-gradient"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Gift Experience -->
+<section class="section" style="background: #f8eff0;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">The Perfect Gift</h2>
+        </div>
+        <div class="gift-grid">
+            <div class="gift-feature">
+                <i class="fas fa-box-open"></i>
+                <h3>Premium Packaging</h3>
+                <p>Every item comes in our signature unboxing experience.</p>
+            </div>
+            <div class="gift-feature">
+                <i class="fas fa-pen-fancy"></i>
+                <h3>Personal Note</h3>
+                <p>Add a handwritten-style note to make it special.</p>
+            </div>
+            <div class="gift-feature">
+                <i class="fas fa-shipping-fast"></i>
+                <h3>Fast Delivery</h3>
+                <p>Priority shipping for all gift orders.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

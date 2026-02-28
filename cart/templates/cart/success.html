@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Placed - Present Pickz{% endblock %}
+
+{% block extra_css %}
+<style>
+    .success-container {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 0;
+    }
+
+    .success-card {
+        background: white;
+        max-width: 600px;
+        width: 100%;
+        padding: 3rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        text-align: center;
+    }
+
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        background: #25D366;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        animation: scaleIn 0.5s ease;
+    }
+
+    .success-icon i {
+        font-size: 2.5rem;
+        color: white;
+    }
+
+    .success-title {
+        font-size: 2rem;
+        color: var(--dark);
+        margin-bottom: 1rem;
+    }
+
+    .success-message {
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .order-info {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: var(--radius-sm);
+        margin-bottom: 2rem;
+        text-align: left;
+    }
+
+    .order-info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.8rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .order-info-row:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .order-info-label {
+        color: var(--text-muted);
+        font-weight: 500;
+    }
+
+    .order-info-value {
+        color: var(--dark);
+        font-weight: 600;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 1rem 2rem;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: var(--dark);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: var(--primary);
+        transform: translateY(-2px);
+    }
+
+    .btn-outline {
+        background: white;
+        color: var(--dark);
+        border: 2px solid var(--dark);
+    }
+
+    .btn-outline:hover {
+        background: var(--dark);
+        color: white;
+    }
+
+    .btn-whatsapp {
+        background: #25D366;
+        color: white;
+    }
+
+    .btn-whatsapp:hover {
+        background: #20ba5a;
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container success-container">
+    <div class="success-card">
+        <div class="success-icon">
+            <i class="fas fa-check"></i>
+        </div>
+
+        <h1 class="success-title">Order Placed Successfully!</h1>
+        <p class="success-message">
+            Thank you for your order! We've received your order and will start processing it right away.
+            You'll receive a confirmation via SMS/Email shortly.
+        </p>
+
+        <div class="order-info">
+            <div class="order-info-row">
+                <span class="order-info-label">Order Date:</span>
+                <span class="order-info-value">{{ order_date }}</span>
+            </div>
+            <div class="order-info-row">
+                <span class="order-info-label">Payment Method:</span>
+                <span class="order-info-value">{{ payment_method }}</span>
+            </div>
+            <div class="order-info-row">
+                <span class="order-info-label">Delivery:</span>
+                <span class="order-info-value">3-5 Business Days</span>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="{% url 'home' %}" class="btn btn-primary">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+            <a href="{% url 'products:product_list' %}" class="btn btn-outline">
+                <i class="fas fa-shopping-bag"></i> Continue Shopping
+            </a>
+            <a href="https://wa.me/1234567890?text=Hi, I just placed an order!" class="btn btn-whatsapp"
+                target="_blank">
+                <i class="fab fa-whatsapp"></i> Contact Us
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

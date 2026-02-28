@@ -1,0 +1,86 @@
+{% extends 'users/account/dashboard.html' %}
+{% load static %}
+
+{% block account_content %}
+<div class="account-header">
+    <h1>My Reviews</h1>
+    <p class="subtitle">See all reviews you have posted</p>
+</div>
+
+{% if reviews %}
+<div class="reviews-list">
+    {% for review in reviews %}
+    <div class="review-item">
+        <div class="review-product">
+            <img src="{{ review.product.get_image_url }}" alt="{{ review.product.name }}">
+        </div>
+        <div class="review-content-wrapper">
+            <h3 class="product-title">
+                <a href="{% url 'products:product_detail' review.product.id %}">{{ review.product.name }}</a>
+            </h3>
+            <div class="review-meta">
+                <span class="stars" style="color: #f59e0b; margin-right: 0.5rem;">{{ review.get_star_display }}</span>
+                <span class="date text-muted">{{ review.created_at|date:"d M, Y" }}</span>
+            </div>
+            <p class="comment">{{ review.comment }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <i class="fas fa-star"></i>
+    <h3>No Reviews Yet</h3>
+    <p>You haven't reviewed any products yet.</p>
+    <a href="{% url 'orders:my_orders' %}" class="cta-btn">Review Purchases</a>
+</div>
+{% endif %}
+
+<style>
+    .reviews-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .review-item {
+        display: flex;
+        gap: 1.5rem;
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid #e0e0e0;
+    }
+
+    .review-product img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #f0f0f0;
+    }
+
+    .product-title a {
+        color: var(--dark);
+        text-decoration: none;
+        font-size: 1.1rem;
+    }
+
+    .product-title a:hover {
+        color: var(--primary);
+    }
+
+    .comment {
+        margin-top: 0.8rem;
+        color: var(--text-main);
+        line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+        .review-item {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}

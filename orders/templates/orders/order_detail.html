@@ -1,0 +1,316 @@
+{% extends 'users/account/dashboard.html' %}
+{% load static %}
+
+{% block account_content %}
+<div class="order-detail-page">
+    <!-- Back Button -->
+    <a href="{% url 'orders:my_orders' %}" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Orders
+    </a>
+
+    <!-- Order Header -->
+    <div class="order-detail-header">
+        <div>
+            <h1>Order #{{ order.order_id }}</h1>
+            <p class="order-meta">
+                Placed on {{ order.created_at|date:"d M, Y" }} at {{ order.created_at|time:"h:i A" }}
+            </p>
+        </div>
+        <div class="status-badge status-{{ order.status|lower }}">
+            <i class="fas fa-circle"></i>
+            {{ order.get_status_display }}
+        </div>
+    </div>
+
+    <!-- Status Timeline -->
+    <div class="status-timeline-section">
+        <h2>Order Status</h2>
+        <div class="timeline">
+            <div
+                class="timeline-item {% if order.status == 'PLACED' or order.status == 'CONFIRMED' or order.status == 'PACKED' or order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
+                <div class="timeline-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="timeline-content">
+                    <h4>Order Placed</h4>
+                    <p>Your order has been placed successfully</p>
+                    <span class="timeline-date">{{ order.created_at|date:"d M, Y h:i A" }}</span>
+                </div>
+            </div>
+
+            <div
+                class="timeline-item {% if order.status == 'CONFIRMED' or order.status == 'PACKED' or order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
+                <div class="timeline-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="timeline-content">
+                    <h4>Order Confirmed</h4>
+                    <p>Your order has been confirmed and is being prepared</p>
+                </div>
+            </div>
+
+            <div
+                class="timeline-item {% if order.status == 'PACKED' or order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
+                <div class="timeline-icon"><i class="fas fa-box"></i></div>
+                <div class="timeline-content">
+                    <h4>Packed</h4>
+                    <p>Your items are packed and ready to ship</p>
+                </div>
+            </div>
+
+            <div
+                class="timeline-item {% if order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
+                <div class="timeline-icon"><i class="fas fa-shipping-fast"></i></div>
+                <div class="timeline-content">
+                    <h4>Shipped</h4>
+                    <p>Your order has been handed over to the courier</p>
+                </div>
+            </div>
+
+            <div
+                class="timeline-item {% if order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
+                <div class="timeline-icon"><i class="fas fa-truck"></i></div>
+                <div class="timeline-content">
+                    <h4>Out for Delivery</h4>
+                    <p>Your order is out for delivery. Expected today.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item {% if order.status == 'DELIVERED' %}completed{% endif %}">
+                <div class="timeline-icon"><i class="fas fa-home"></i></div>
+                <div class="timeline-content">
+                    <h4>Delivered</h4>
+                    <p>Order delivered successfully</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-message" style="flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
+                <i class="fas fa-info-circle"></i>
+                <p>{{ order.get_status_instruction }}</p>
+            </div>
+
+            {% if order.status == 'CANCELLED' %}
+            <div
+                style="width: 100%; margin-top: 0.5rem; padding-left: 2rem; border-top: 1px dashed #e5e7eb; padding-top: 0.5rem;">
+                {% if order.cancelled_by %}
+                <p style="color:#dc3545; font-weight: 600; font-size: 0.9rem;">Cancelled by {{
+                    order.get_cancelled_by_display }}</p>
+                {% endif %}
+                {% if order.cancel_reason %}
+                <p style="color: #374151; font-size: 0.9rem;">Reason: <strong>{{ order.get_cancel_reason_display
+                        }}</strong></p>
+                {% endif %}
+                {% if order.cancellation_note %}
+                <p style="color: #6b7280; font-size: 0.9rem; font-style: italic; margin-top: 0.2rem;">"{{
+                    order.cancellation_note }}"</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if order.refund %}
+            <div style="width: 100%; padding-left: 2rem; margin-top: 0.5rem;">
+                <p style="color:#2563eb; font-weight: 600;">
+                    <i class="fas fa-undo"></i> Refund: {{ order.refund.get_status_display }}
+                    {% if order.payment_method == 'ONLINE' %}
+                    <span
+                        style="font-size: 0.8rem; color: #6b7280; font-weight: 400; display: block; margin-top: 0.2rem;">
+                        (Refund processing: 5-7 business days)
+                    </span>
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Order Details Grid -->
+    <div class="order-details-grid">
+        <!-- Delivery Address -->
+        <div class="detail-card">
+            <h3><i class="fas fa-map-marker-alt"></i> Delivery Address</h3>
+            <div class="detail-content">
+                <p><strong>{{ order.full_name }}</strong></p>
+                <p>{{ order.address }}</p>
+                <p>Phone: {{ order.mobile }}</p>
+                {% if order.email %}
+                <p>Email: {{ order.email }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Payment Information -->
+        <div class="detail-card">
+            <h3><i class="fas fa-credit-card"></i> Payment Method</h3>
+            <div class="detail-content">
+                <p><strong>{{ order.get_payment_method_display }}</strong></p>
+                {% if order.payment_method == 'ONLINE' %}
+                <p class="payment-status success">
+                    <i class="fas fa-check-circle"></i> Payment Successful
+                </p>
+                {% else %}
+                <p class="payment-status pending">
+                    <i class="fas fa-clock"></i> Pay on Delivery
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="order-items-section">
+        <h2>Order Items</h2>
+        <div class="items-list">
+            {% for item in order.items.all %}
+            <div class="order-item">
+                <div class="item-image">
+                    {% if item.product %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                    {% else %}
+                    <div class="no-image"><i class="fas fa-box"></i></div>
+                    {% endif %}
+                </div>
+                <div class="item-details">
+                    <h4>{% if item.product %}{{ item.product.name }}{% else %}Product{% endif %}</h4>
+                    <p class="item-meta">Qty: {{ item.quantity }}</p>
+                    {% if item.is_gift_wrapped %}
+                    <p class="gift-tag"><i class="fas fa-gift"></i> Gift Wrapped</p>
+                    {% if item.gift_message %}
+                    <p class="gift-message">Message: "{{ item.gift_message }}"</p>
+                    {% endif %}
+                    {% endif %}
+
+                    {% if order.status == 'DELIVERED' and item.product and not item.is_reviewed %}
+                    <a href="{% url 'products:add_review' order.order_id item.product.id %}" class="btn-review-sm mt-2">
+                        <i class="fas fa-star"></i> Rate & Review
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="item-price">
+                    <p class="price">₹{{ item.price }}</p>
+                    <p class="total">Total: ₹{{ item.get_cost }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary">
+        <h3>Order Summary</h3>
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <span>₹{{ order.total_amount|add:"-"|add:order.delivery_charge }}</span>
+        </div>
+        <div class="summary-row">
+            <span>Delivery Charge</span>
+            <span>₹{{ order.delivery_charge }}</span>
+        </div>
+        {% if order.packing_charge > 0 %}
+        <div class="summary-row">
+            <span>Packing / Gift Wrap</span>
+            <span>₹{{ order.packing_charge }}</span>
+        </div>
+        {% endif %}
+
+        {% if order.gift_wrap %}
+        <div class="summary-row"
+            style="background: #fff5f7; padding: 0.5rem; border-radius: 4px; border: 1px dashed var(--primary); margin-top: 0.5rem;">
+            <span style="display: block; width: 100%;">
+                <i class="fas fa-gift" style="color: var(--primary);"></i> <strong>Gift Details:</strong><br>
+                <small class="text-muted">Message: "{{ order.gift_message }}"</small>
+            </span>
+        </div>
+        {% endif %}
+
+        <div class="summary-row total">
+            <span>Total Amount</span>
+            <span>₹{{ order.total_amount }}</span>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="order-detail-actions">
+        <a href="#" class="btn-outline">
+            <i class="fas fa-download"></i> Download Invoice
+        </a>
+
+        {% with s=order.status|lower %}
+        {% if s == 'placed' or s == 'confirmed' or s == 'paid' or s == 'processing' %}
+        <button type="button" class="btn-danger" style="background: #fee2e2; color: #dc2626; border: 1px solid #dc2626;"
+            onclick="openCancelModal('{% url 'orders:cancel_order' order.order_id %}')">
+            <i class="fas fa-times"></i> Cancel Order
+        </button>
+        {% endif %}
+        {% endwith %}
+
+        <a href="#" class="btn-outline">
+            <i class="fas fa-headset"></i> Need Help?
+        </a>
+    </div>
+</div>
+
+<!-- Cancel Modal -->
+<div class="modal-overlay" id="cancelModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <div class="modal-title" style="justify-content: center;">
+                Cancel Order
+            </div>
+            <p style="color: #666; font-size: 0.9rem;">Are you sure you want to cancel this order?</p>
+        </div>
+        <form id="cancelModalForm" method="post" action="">
+            {% csrf_token %}
+            <div class="modal-body">
+                <label style="text-align: left;">Reason for cancellation:</label>
+                <select name="cancel_reason" class="modal-select" required onchange="toggleOtherReason(this)">
+                    <option value="">Select Reason</option>
+                    <option value="CHANGED_MIND">Changed my mind</option>
+                    <option value="WRONG_ITEM">Ordered wrong item</option>
+                    <option value="DELAYED">Delivery taking too long</option>
+                    <option value="FOUND_CHEAPER">Found cheaper elsewhere</option>
+                    <option value="STOCK_ISSUE">Stock unavailable</option>
+                    <option value="OTHER">Other</option>
+                </select>
+                <textarea name="cancellation_note" id="otherReasonInput" class="modal-select" rows="3"
+                    placeholder="Please specify your reason..."
+                    style="display:none; margin-top:0.5rem; font-family:inherit;"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal-cancel" onclick="closeCancelModal()">Keep Order</button>
+                <button type="submit" class="btn-modal-confirm">Confirm Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openCancelModal(actionUrl) {
+        document.getElementById('cancelModalForm').action = actionUrl;
+        document.getElementById('cancelModal').classList.add('active');
+        // Reset
+        document.querySelector('select[name="cancel_reason"]').value = "";
+        document.getElementById('otherReasonInput').style.display = 'none';
+        document.getElementById('otherReasonInput').required = false;
+    }
+
+    function closeCancelModal() {
+        document.getElementById('cancelModal').classList.remove('active');
+    }
+
+    function toggleOtherReason(select) {
+        var noteInput = document.getElementById('otherReasonInput');
+        if (select.value === 'OTHER') {
+            noteInput.style.display = 'block';
+            noteInput.required = true;
+        } else {
+            noteInput.style.display = 'none';
+            noteInput.required = false;
+        }
+    }
+
+    document.getElementById('cancelModal').addEventListener('click', function (e) {
+        if (e.target === this) {
+            closeCancelModal();
+        }
+    });
+</script>
+
+{% endblock %}

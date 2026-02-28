@@ -1,0 +1,125 @@
+{% extends 'users/account/dashboard.html' %}
+{% load static %}
+
+{% block account_content %}
+<div class="account-header">
+    <a href="{% url 'users:saved_addresses' %}" class="back-link mb-3 d-inline-block">
+        <i class="fas fa-arrow-left"></i> Back to Addresses
+    </a>
+    <h1>{{ title }}</h1>
+</div>
+
+<div class="form-container">
+    <form method="post" class="address-form">
+        {% csrf_token %}
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Full Name</label>
+                {{ form.name }}
+            </div>
+            <div class="form-group col-md-6">
+                <label>Mobile Number</label>
+                {{ form.mobile }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Address Line 1</label>
+            {{ form.address_line1 }}
+        </div>
+
+        <div class="form-group">
+            <label>Address Line 2 (Optional)</label>
+            {{ form.address_line2 }}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label>City</label>
+                {{ form.city }}
+            </div>
+            <div class="form-group col-md-4">
+                <label>State</label>
+                {{ form.state }}
+            </div>
+            <div class="form-group col-md-4">
+                <label>Pincode</label>
+                {{ form.pincode }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Address Type</label>
+            {{ form.address_type }}
+        </div>
+
+        <div class="form-group check-group">
+            {{ form.is_default }}
+            <label class="form-check-label" for="{{ form.is_default.id_for_label }}">
+                Make this my default address
+            </label>
+        </div>
+
+        <button type="submit" class="btn-primary mt-3">Save Address</button>
+    </form>
+</div>
+
+<style>
+    .form-container {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid #e0e0e0;
+        max-width: 800px;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--dark);
+    }
+
+    .form-control,
+    select.form-control {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        outline: none;
+    }
+
+    .check-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            flex-direction: column;
+            gap: 0;
+        }
+    }
+</style>
+{% endblock %}

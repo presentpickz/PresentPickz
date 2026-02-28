@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Confirmed - Present Pickz{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 6rem 0; text-align: center;">
+    <div
+        style="background: white; max-width: 600px; margin: 0 auto; padding: 3rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+        <div
+            style="width: 80px; height: 80px; background: #E8F5E9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; color: #4CAF50; font-size: 2.5rem;">
+            <i class="fas fa-check"></i>
+        </div>
+
+        <h1 style="color: var(--dark); margin-bottom: 1rem;">Order Confirmed!</h1>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Thank you, {{ order.full_name }}. Your order has been
+            placed successfully.</p>
+
+        <div
+            style="background: var(--light); padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem; text-align: left;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">Order ID:</span>
+                <span style="font-weight: 600;">{{ order.order_id }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">Payment Method:</span>
+                <span style="font-weight: 600;">{{ order.get_payment_method_display }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">Amount:</span>
+                <span style="font-weight: 600; color: var(--primary);">₹{{ order.total_amount }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Status:</span>
+                <span style="font-weight: 600; color: #4CAF50;">{{ order.status }}</span>
+            </div>
+        </div>
+
+        <div style="text-align: left; margin-bottom: 2rem;">
+            <h4 style="margin-bottom: 1rem;">Items</h4>
+            {% for item in order.items.all %}
+            <div
+                style="display: flex; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #eee;">
+                {% if item.product.image %}
+                <img src="{{ item.product.image.url }}"
+                    style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                {% endif %}
+                <div>
+                    <div style="font-weight: 600;">{{ item.product.name }}</div>
+                    <div class="text-muted" style="font-size: 0.9rem;">
+                        Qty: {{ item.quantity }} | Total: ₹
+                        {{ item.get_cost }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="{% url 'products:product_list' %}" class="cta-btn">Continue Shopping</a>
+    </div>
+</div>
+{% endblock %}

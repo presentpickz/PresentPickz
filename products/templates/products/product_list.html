@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shop - Present Pickz{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/wishlist.css' %}">
+<style>
+    .shop-header {
+        padding: 3rem 0;
+        text-align: center;
+        background: linear-gradient(135deg, #fff5f7 0%, #fff 100%);
+        margin-bottom: 2rem;
+    }
+
+    .shop-title {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--dark);
+    }
+
+    .filter-bar {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .filter-chip {
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        border: 1px solid #eee;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .filter-chip.active,
+    .filter-chip:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 4rem;
+    }
+
+    .product-card {
+        background: white;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        transition: var(--transition);
+        position: relative;
+        border: 1px solid #f0f0f0;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        will-change: transform;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .product-image-container {
+        position: relative;
+        padding-top: 100%;
+        /* 1:1 Aspect Ratio */
+        background: #f8f9fa;
+        overflow: hidden;
+    }
+
+    .product-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+
+    .badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        z-index: 10;
+        text-transform: uppercase;
+    }
+
+    .badge.new {
+        background: var(--secondary);
+        color: white;
+    }
+
+    .badge.hot {
+        background: var(--primary);
+        color: white;
+    }
+
+    .badge.sale {
+        background: var(--accent);
+        color: var(--dark);
+    }
+
+    .product-info {
+        padding: 1.5rem;
+    }
+
+    .product-category {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .product-name {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+    }
+
+    .product-price-row {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-top: 0.5rem;
+    }
+
+    .current-price {
+        font-weight: 700;
+        color: var(--dark);
+        font-size: 1.2rem;
+    }
+
+    .original-price {
+        color: var(--gray);
+        text-decoration: line-through;
+        font-size: 0.9rem;
+    }
+
+    .discount {
+        color: #25D366;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="shop-header">
+    <div class="container">
+        <h1 class="shop-title">Explore Our Collection</h1>
+        <p>Curated gifts and collectibles for every occasion</p>
+
+        <div class="filter-bar">
+            <a href="{% url 'products:product_list' %}"
+                class="filter-chip {% if not current_category %}active{% endif %}">All</a>
+            {% for cat in categories %}
+            <a href="?category={{ cat.slug }}"
+                class="filter-chip {% if current_category == cat.slug %}active{% endif %}">{{ cat.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="products-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <a href="{% url 'products:product_detail' product.id %}" style="text-decoration: none; color: inherit;">
+                <div class="product-image-container">
+                    <img src="{{ product.get_image_url }}" alt="{{ product.name }}" class="product-image"
+                        loading="lazy">
+                    {% if product.is_new %}
+                    <span class="badge new">New</span>
+                    {% elif product.badge %}
+                    <span class="badge hot">{{ product.badge }}</span>
+                    {% endif %}
+                </div>
+                <div class="product-info">
+                    <div class="product-category">{{ product.category.name }}</div>
+                    <h3 class="product-name">{{ product.name }}</h3>
+                    <div class="product-price-row">
+                        <span class="current-price">₹{{ product.price }}</span>
+                        {% if product.original_price %}
+                        <span class="original-price">₹{{ product.original_price }}</span>
+                        <span class="discount">{{ product.discount_percentage }}% OFF</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+
+            <!-- Wishlist Button -->
+            {% if user.is_authenticated %}
+            {% if product in user.wishlist.products.all %}
+            <button class="wishlist-btn active" data-product-id="{{ product.id }}" aria-label="Remove from wishlist"
+                title="Remove from wishlist">
+                <i class="fas fa-heart"></i>
+            </button>
+            {% else %}
+            <button class="wishlist-btn" data-product-id="{{ product.id }}" aria-label="Add to wishlist"
+                title="Add to wishlist">
+                <i class="far fa-heart"></i>
+            </button>
+            {% endif %}
+            {% else %}
+            <a href="{% url 'users:login' %}?next={{ request.path }}" class="wishlist-btn"
+                aria-label="Login to add to wishlist" title="Login to add to wishlist">
+                <i class="far fa-heart"></i>
+            </a>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p>No products found in this category.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Wishlist | Present Pickz{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/wishlist.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="wishlist-page">
+    <div class="container">
+        <!-- Header Section -->
+        <header class="wishlist-header">
+            <i class="fas fa-heart"></i>
+            <h1>Your Wishlist</h1>
+            <p>A curated collection of things you love.</p>
+        </header>
+
+        {% if products %}
+        <!-- Wishlist Items Grid -->
+        <div class="wishlist-grid">
+            {% for product in products %}
+            <article class="wishlist-card">
+                <div class="wishlist-image-wrapper">
+                    <a href="{% url 'products:product_detail' product.id %}">
+                        <img src="{{ product.get_image_url }}" alt="{{ product.name }}" loading="lazy">
+                    </a>
+                </div>
+
+                <div class="wishlist-card-content">
+                    <a href="{% url 'products:product_detail' product.id %}">
+                        <h3>{{ product.name }}</h3>
+                    </a>
+                    <p>₹{{ product.price }}</p>
+
+                    <div class="wishlist-actions">
+                        <form action="{% url 'cart:add_to_cart' product.id %}" method="post" style="flex: 1;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-add-cart">
+                                <i class="fas fa-shopping-bag"></i> <span>Add to Cart</span>
+                            </button>
+                        </form>
+
+                        <a href="{% url 'users:toggle_wishlist' product.id %}" class="btn-remove"
+                            title="Remove from Wishlist">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="empty-wishlist">
+            <div class="empty-icon-wrapper">
+                <i class="far fa-heart"></i>
+            </div>
+            <h2>Your wishlist is empty</h2>
+            <p>It looks like you haven't added any products to your wishlist yet. Explore our collection and find
+                something you love!</p>
+            <a href="{% url 'products:product_list' %}" class="btn-shop-now">Explore Collection</a>
+        </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

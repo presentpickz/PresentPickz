@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shipping Policy - Present Pickz{% endblock %}
+
+{% block content %}
+<div class="static-page-wrapper">
+    <div class="container">
+        <div class="static-content-card">
+            <h1 class="page-title">Shipping Policy</h1>
+            <p class="last-updated">Last Updated: January 2026</p>
+
+            <section class="policy-section">
+                <div class="shipping-info-grid">
+                    <div class="info-item">
+                        <i class="fas fa-shipping-fast"></i>
+                        <h3>Standard Delivery</h3>
+                        <p>3-5 Business Days</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-box"></i>
+                        <h3>Processing Time</h3>
+                        <p>1-2 Business Days</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>Coverage</h3>
+                        <p>All Over India</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="policy-section">
+                <h2>1. Delivery Timelines</h2>
+                <p>We strive to deliver your orders as quickly as possible. Typical delivery times are:</p>
+                <ul>
+                    <li><strong>Metro Cities:</strong> 2-3 business days.</li>
+                    <li><strong>Other Cities:</strong> 4-6 business days.</li>
+                    <li><strong>Remote Areas:</strong> 7-10 business days.</li>
+                </ul>
+                <p>Please note that these are estimated delivery times and actual delivery might vary depending on the
+                    destination and courier availability.</p>
+            </section>
+
+            <section class="policy-section">
+                <h2>2. Shipping Charges</h2>
+                <p>Shipping charges are calculated based on the weight of the items and the delivery location. You can
+                    view the exact shipping cost during the checkout process.</p>
+                <ul>
+                    <li><strong>Free Shipping:</strong> Orders above ₹999 are eligible for free standard shipping.</li>
+                </ul>
+            </section>
+
+            <section class="policy-section">
+                <h2>3. Order Tracking</h2>
+                <p>Once your order is shipped, you will receive an email and SMS with the tracking details. You can also
+                    track your order directly from the <strong>Track Order</strong> page on our website using your Order
+                    ID.</p>
+            </section>
+
+            <section class="policy-section">
+                <h2>4. Shipping Partners</h2>
+                <p>We partner with reliable logistics companies like BlueDart, Delhivery, and Ecom Express to ensure
+                    your packages are handled with care and delivered on time.</p>
+            </section>
+
+            <section class="policy-section">
+                <h2>5. Packing & Handling</h2>
+                <p>All items are packed securely to prevent any damage during transit. We also offer premium gift
+                    wrapping for a small additional charge, which can be selected at the time of checkout.</p>
+            </section>
+
+            <section class="policy-section">
+                <h2>6. Damaged Shipments</h2>
+                <p>If you receive a package that is visibly damaged or tampered with, please do not accept the delivery
+                    and contact our customer support immediately at +91 9791887356.</p>
+            </section>
+        </div>
+    </div>
+</div>
+
+<style>
+    .static-page-wrapper {
+        padding: 40px 0;
+        background-color: #f8f9fa;
+        min-height: 100vh;
+    }
+
+    .static-content-card {
+        background: #fff;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        margin-top: 20px;
+    }
+
+    .page-title {
+        color: #0984e3;
+        font-weight: 700;
+        margin-bottom: 5px;
+        font-size: 2.5rem;
+    }
+
+    .last-updated {
+        color: #636e72;
+        font-size: 0.9rem;
+        margin-bottom: 40px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 20px;
+    }
+
+    .shipping-info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+
+    .info-item {
+        background: #f1f8ff;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        transition: transform 0.3s;
+    }
+
+    .info-item:hover {
+        transform: translateY(-5px);
+    }
+
+    .info-item i {
+        font-size: 2.5rem;
+        color: #0984e3;
+        margin-bottom: 15px;
+    }
+
+    .info-item h3 {
+        color: #2d3436;
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+    }
+
+    .info-item p {
+        color: #636e72;
+        margin: 0;
+    }
+
+    .policy-section {
+        margin-bottom: 35px;
+    }
+
+    .policy-section h2 {
+        color: #2d3436;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .policy-section p {
+        color: #4b5563;
+        line-height: 1.8;
+        margin-bottom: 15px;
+    }
+
+    .policy-section ul {
+        margin-bottom: 15px;
+        padding-left: 20px;
+    }
+
+    .policy-section ul li {
+        color: #4b5563;
+        line-height: 1.8;
+        margin-bottom: 8px;
+    }
+
+    @media (max-width: 768px) {
+        .shipping-info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .static-content-card {
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+{% endblock %}

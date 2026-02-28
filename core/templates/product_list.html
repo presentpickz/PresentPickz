@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Everything | Present Pickz</title>
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="icon" type="image/jpg" href="{% static 'images/brand_logo.jpg' %}?v={% now 'U' %}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="{% url 'home' %}" class="nav-logo">
+                <img src="{% static 'images/brand_logo.jpg' %}?v={% now 'U' %}" alt="Present Pickz"
+                    style="height: 40px; vertical-align: middle;">
+            </a>
+            <div class="nav-links">
+                <a href="{% url 'home' %}" class="nav-link">Home</a>
+                <a href="{% url 'product_list' %}" class="nav-link active">Shop</a>
+            </div>
+            <div class="nav-actions">
+                <a href="{% url 'cart' %}" class="btn btn-primary" style="height: 40px; padding: 0 16px;">Cart</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="section">
+        <div class="container">
+            <h1 style="margin-bottom: 32px;">Discover All Picks</h1>
+
+            <div class="products-grid">
+                {% for product in products %}
+                <div class="product-card" onclick="location.href='{% url 'product_detail' product.id %}'"
+                    style="cursor: pointer;">
+                    <div class="product-image-container">
+                        <img src="{% static 'images/' %}{{ product.image }}" alt="{{ product.name }}"
+                            class="product-img">
+                        {% if product.badge %}
+                        <span
+                            class="product-badge {% if product.badge == 'HOT' or product.badge == 'LIMITED' or product.badge == 'COLLECTOR' %}badge-purple{% else %}badge-yellow{% endif %}">
+                            {{ product.badge }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">{{ product.name }}</h3>
+                        <div class="product-price-row">
+                            <span class="price-current">₹{{ product.price }}</span>
+                            {% if product.original_price %}
+                            <span class="price-original">₹{{ product.original_price }}</span>
+                            {% endif %}
+                        </div>
+                        <button class="btn btn-outline btn-full">View Details</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Present Pickz. Joy, Delivered.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

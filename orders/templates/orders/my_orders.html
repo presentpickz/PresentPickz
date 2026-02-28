@@ -1,0 +1,230 @@
+{% extends 'users/account/dashboard.html' %}
+{% load static %}
+
+{% block account_content %}
+<div class="account-header">
+    <h1>My Orders</h1>
+    <p class="subtitle">Track and manage your orders</p>
+</div>
+
+{% if orders %}
+<div class="orders-list">
+    {% for order in orders %}
+    <div class="order-card">
+        <div class="order-header">
+            <div class="order-info">
+                <h3>Order #{{ order.order_id }}</h3>
+                <p class="order-date">
+                    <i class="far fa-calendar"></i>
+                    {{ order.created_at|date:"d M, Y" }}
+                </p>
+            </div>
+            <div class="order-amount">
+                <p class="amount-label">Total Amount</p>
+                <h3>₹{{ order.total_amount }}</h3>
+            </div>
+        </div>
+
+        <!-- Status Progress Bar -->
+        <div class="status-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ order.get_status_progress }}%"></div>
+            </div>
+            <div class="status-steps">
+                <div
+                    class="status-step {% if order.status == 'PLACED' or order.status == 'CONFIRMED' or order.status == 'PACKED' or order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
+                    <div class="step-icon"><i class="fas fa-check"></i></div>
+                    <p>Placed</p>
+                </div>
+                <div
+                    class="status-step {% if order.status == 'CONFIRMED' or order.status == 'PACKED' or order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
+                    <div class="step-icon"><i class="fas fa-check"></i></div>
+                    <p>Confirmed</p>
+                </div>
+                <div
+                    class="status-step {% if order.status == 'PACKED' or order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
+                    <div class="step-icon"><i class="fas fa-box"></i></div>
+                    <p>Packed</p>
+                </div>
+                <div
+                    class="status-step {% if order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
+                    <div class="step-icon"><i class="fas fa-shipping-fast"></i></div>
+                    <p>Shipped</p>
+                </div>
+                <div
+                    class="status-step {% if order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
+                    <div class="step-icon"><i class="fas fa-truck"></i></div>
+                    <p>Out for Delivery</p>
+                </div>
+                <div class="status-step {% if order.status == 'DELIVERED' %}completed{% endif %}">
+                    <div class="step-icon"><i class="fas fa-home"></i></div>
+                    <p>Delivered</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Status Badge -->
+        <div class="order-status-section">
+            <div class="status-badge status-{{ order.status|lower }}">
+                <i class="fas fa-circle"></i>
+                {{ order.get_status_display }}
+            </div>
+            <p class="status-instruction">{{ order.get_status_instruction }}</p>
+            {% if order.status == 'CANCELLED' %}
+            <div style="border-top: 1px dashed #eee; padding-top: 0.4rem; margin-top: 0.4rem;">
+                {% if order.cancelled_by %}
+                <p class="text-danger" style="font-size: 0.85rem; font-weight: 500; margin-bottom: 0.2rem;">
+                    Cancelled by {{ order.get_cancelled_by_display }}
+                </p>
+                {% endif %}
+                {% if order.cancel_reason %}
+                <p style="color: #555; font-size: 0.85rem; margin-bottom: 0.2rem;">Reason: <strong>{{
+                        order.get_cancel_reason_display }}</strong></p>
+                {% endif %}
+                {% if order.cancellation_note %}
+                <p style="color: #777; font-size: 0.8rem; font-style: italic; margin-bottom: 0.2rem;">"{{
+                    order.cancellation_note|truncatechars:60 }}"</p>
+                {% endif %}
+            </div>
+            {% if order.refund %}
+            <p class="mt-1" style="font-size: 0.85rem; color: #2563eb; font-weight: 600;">
+                <i class="fas fa-undo"></i> Refund: {{ order.refund.get_status_display }}
+                {% if order.payment_method == 'ONLINE' %}
+                <span style="font-size: 0.75rem; color: #6b7280; font-weight: 400;">(Est. 5-7 days)</span>
+                {% endif %}
+            </p>
+            {% endif %}
+            {% endif %}
+        </div>
+
+        <!-- Order Items Preview -->
+        <div class="order-items-preview">
+            <h4>Items ({{ order.items.count }})</h4>
+            <div class="items-grid">
+                {% for item in order.items.all|slice:":3" %}
+                <div class="item-preview">
+                    {% if item.product %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                    <p>{{ item.product.name }}</p>
+                    {% else %}
+                    <p>{{ item.quantity }}x Product</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                {% if order.items.count > 3 %}
+                <div class="item-preview more-items">
+                    <p>+{{ order.items.count|add:"-3" }} more</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Order Actions -->
+        <div class="order-actions">
+            <a href="{% url 'orders:order_detail' order.order_id %}" class="btn-outline">
+                <i class="fas fa-eye"></i> View Details
+            </a>
+
+            {% with s=order.status|lower %}
+            {% if s == 'placed' or s == 'confirmed' or s == 'paid' or s == 'processing' %}
+            <button type="button" class="btn-danger"
+                style="background: #fee2e2; color: #dc2626; border: 1px solid #dc2626;"
+                onclick="openCancelModal('{% url 'orders:cancel_order' order.order_id %}')">
+                <i class="fas fa-times"></i> Cancel Order
+            </button>
+            {% endif %}
+            {% endwith %}
+
+            {% if order.status == 'DELIVERED' %}
+            <a href="{% url 'orders:rate_review' order.order_id %}" class="btn-primary">
+                <i class="fas fa-star"></i> Rate & Review
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination if needed -->
+<div class="pagination-section">
+    <p>Showing {{ orders.count }} order{{ orders.count|pluralize }}</p>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <i class="fas fa-box-open"></i>
+    <h3>No Orders Yet</h3>
+    <p>You haven't placed any orders yet. Start shopping to see your orders here!</p>
+    <a href="{% url 'products:product_list' %}" class="cta-btn">
+        <i class="fas fa-shopping-bag"></i> Start Shopping
+    </a>
+</div>
+{% endif %}
+
+<!-- Cancel Modal -->
+<div class="modal-overlay" id="cancelModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <div class="modal-title" style="justify-content: center;">
+                Cancel Order
+            </div>
+            <p style="color: #666; font-size: 0.9rem;">Are you sure you want to cancel this order?</p>
+        </div>
+        <form id="cancelModalForm" method="post" action="">
+            {% csrf_token %}
+            <div class="modal-body">
+                <label style="text-align: left;">Reason for cancellation:</label>
+                <select name="cancel_reason" class="modal-select" required onchange="toggleOtherReason(this)">
+                    <option value="">Select Reason</option>
+                    <option value="CHANGED_MIND">Changed my mind</option>
+                    <option value="WRONG_ITEM">Ordered wrong item</option>
+                    <option value="DELAYED">Delivery taking too long</option>
+                    <option value="FOUND_CHEAPER">Found cheaper elsewhere</option>
+                    <option value="STOCK_ISSUE">Stock unavailable</option>
+                    <option value="OTHER">Other</option>
+                </select>
+                <textarea name="cancellation_note" id="otherReasonInput" class="modal-select" rows="3"
+                    placeholder="Please specify your reason..."
+                    style="display:none; margin-top:0.5rem; font-family:inherit;"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal-cancel" onclick="closeCancelModal()">Keep Order</button>
+                <button type="submit" class="btn-modal-confirm">Confirm Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openCancelModal(actionUrl) {
+        document.getElementById('cancelModalForm').action = actionUrl;
+        document.getElementById('cancelModal').classList.add('active');
+        // Reset
+        document.querySelector('select[name="cancel_reason"]').value = "";
+        document.getElementById('otherReasonInput').style.display = 'none';
+        document.getElementById('otherReasonInput').required = false;
+    }
+
+    function closeCancelModal() {
+        document.getElementById('cancelModal').classList.remove('active');
+    }
+
+    function toggleOtherReason(select) {
+        var noteInput = document.getElementById('otherReasonInput');
+        if (select.value === 'OTHER') {
+            noteInput.style.display = 'block';
+            noteInput.required = true;
+        } else {
+            noteInput.style.display = 'none';
+            noteInput.required = false;
+        }
+    }
+
+    document.getElementById('cancelModal').addEventListener('click', function (e) {
+        if (e.target === this) {
+            closeCancelModal();
+        }
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load socialaccount %}
+
+{% block title %}Sign Up - Present Pickz{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 class="auth-title">Create Account</h2>
+            <p class="auth-subtitle">Join the exclusive community of collectors</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div
+                style="background: #FFF5F5; color: #C53030; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; border: 1px solid #FEB2B2;">
+                {% for error in form.non_field_errors %}
+                {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% for field in form %}
+            <div class="form-group">
+                <label class="form-label">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <small style="color: #C53030; display: block; margin-top: 0.4rem; font-size: 0.85rem;">{{ field.errors.0
+                    }}</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="cta-btn"
+                style="width: 100%; border-radius: 12px; height: 50px; font-size: 1rem;">Sign Up</button>
+        </form>
+
+        <div class="auth-divider">
+            <span>Or continue with</span>
+        </div>
+
+        <a href="{% provider_login_url 'google' %}" class="google-btn">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"
+                style="width: 20px;">
+            Google
+        </a>
+
+        <div class="auth-footer">
+            Already have an account? <a href="{% url 'users:login' %}">Log In</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

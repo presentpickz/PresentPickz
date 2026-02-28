@@ -1,0 +1,193 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} | Present Pickz</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="icon" type="image/jpg" href="{% static 'images/brand_logo.jpg' %}?v={% now 'U' %}">
+
+    <style>
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 64px;
+            align-items: start;
+        }
+
+        @media(max-width: 991px) {
+            .split-layout {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        .gallery-main {
+            background: #F8FAFC;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+            aspect-ratio: 1;
+            /* Square for focus */
+        }
+
+        .gallery-main img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .detail-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stock-badge {
+            background: #DCFCE7;
+            color: #166534;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .price-large {
+            font-family: 'Poppins';
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--color-brand-primary);
+        }
+
+        .opt-box {
+            padding: 20px;
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            margin: 32px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-row">
+            <a href="{% url 'home' %}" class="nav-logo">
+                <img src="{% static 'images/brand_logo.jpg' %}?v={% now 'U' %}" alt="Logo"
+                    style="width: 32px; height: 32px; border-radius: 6px;">
+                <span>Present Pickz</span>
+            </a>
+            <div class="nav-links">
+                <a href="{% url 'home' %}" class="nav-link">Home</a>
+                <a href="{% url 'product_list' %}" class="nav-link active">Shop</a>
+            </div>
+            <div class="nav-actions">
+                <a href="{% url 'cart' %}" class="btn btn-primary" style="padding: 10px 24px; font-size: 14px;">My
+                    Bag</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="section" style="padding-top: 140px;"> <!-- Offset for fixed header -->
+        <div class="container">
+            <!-- Breadcrumb -->
+            <div style="margin-bottom: 32px; color: var(--color-text-muted); font-size: 14px;">
+                <a href="{% url 'home' %}">Home</a> / <a href="{% url 'product_list' %}">Shop</a> / <span
+                    style="color: var(--color-text-main);">{{ product.name }}</span>
+            </div>
+
+            <div class="split-layout">
+                <!-- Left: Gallery -->
+                <div class="gallery-column">
+                    <div class="gallery-main">
+                        <img src="{% static 'images/' %}{{ product.image }}" alt="{{ product.name }}">
+                    </div>
+                    <!-- Thumbnails placeholder -->
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 16px;">
+                        <div
+                            style="aspect-ratio: 1; border: 1px solid var(--color-brand-primary); border-radius: 8px; padding: 4px;">
+                            <img src="{% static 'images/' %}{{ product.image }}"
+                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Info -->
+                <div class="info-column">
+                    <div class="detail-meta">
+                        <span style="color: var(--color-brand-primary); font-weight: 600;">{{ product.category }}</span>
+                        <span class="stock-badge">In Stock</span>
+                    </div>
+
+                    <h1 style="font-size: 42px; margin-bottom: 16px; line-height: 1.1;">{{ product.name }}</h1>
+
+                    <div style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 32px;">
+                        <span class="price-large">₹{{ product.price }}</span>
+                        {% if product.original_price %}
+                        <span
+                            style="text-decoration: line-through; color: var(--color-text-muted); font-size: 20px;">₹{{
+                            product.original_price }}</span>
+                        {% endif %}
+                    </div>
+
+                    <p style="color: var(--color-text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 32px;">
+                        {{ product.description }}
+                    </p>
+
+                    <!-- Add to Cart Action -->
+                    <div style="display: flex; gap: 16px; margin-bottom: 40px;">
+                        <div
+                            style="display: flex; align-items: center; border: 1px solid var(--color-border); border-radius: 8px; padding: 0 16px;">
+                            <button style="background: none; border: none; font-size: 20px; cursor: pointer;">-</button>
+                            <span style="margin: 0 20px; font-weight: 600;">1</span>
+                            <button style="background: none; border: none; font-size: 20px; cursor: pointer;">+</button>
+                        </div>
+                        <button class="btn btn-primary" style="flex: 1; height: 56px; font-size: 18px;">Add to
+                            Bag</button>
+                        <button class="btn btn-outline" style="width: 56px; padding: 0;">♡</button>
+                    </div>
+
+                    <!-- Features -->
+                    <div style="border-top: 1px solid var(--color-border); padding-top: 32px;">
+                        <h4 style="margin-bottom: 20px;">Product Highlights</h4>
+                        <ul style="display: grid; gap: 12px;">
+                            {% for feature in product.features %}
+                            <li style="display: flex; align-items: center; gap: 12px; color: var(--color-text-muted);">
+                                <span
+                                    style="width: 6px; height: 6px; background: var(--color-brand-primary); border-radius: 50%;"></span>
+                                {{ feature }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- Gift Wrap Option -->
+                    <div class="opt-box" style="background: #FFF5F2; border-color: rgba(255, 111, 60, 0.2);">
+                        <label
+                            style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-weight: 500;">
+                            <input type="checkbox"
+                                style="accent-color: var(--color-brand-primary); width: 18px; height: 18px;">
+                            Add Premium Gift Wrap (+₹50)
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: #111; color: white; padding: 60px 0; margin-top: 80px;">
+        <div class="container" style="text-align: center; color: #666;">
+            &copy; 2024 Present Pickz.
+        </div>
+    </footer>
+
+</body>
+
+</html>

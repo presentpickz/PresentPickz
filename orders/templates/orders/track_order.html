@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Track Your Order - Present Pickz{% endblock %}
+
+{% block extra_css %}
+<style>
+    .track-container {
+        max-width: 500px;
+        margin: 4rem auto;
+        padding: 2rem;
+    }
+
+    .track-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .track-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .track-header i {
+        font-size: 3rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .track-header h1 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .track-header p {
+        color: #666;
+        font-size: 0.95rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(255, 51, 102, 0.1);
+    }
+
+    .divider {
+        text-align: center;
+        margin: 1.5rem 0;
+        position: relative;
+    }
+
+    .divider::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 100%;
+        height: 1px;
+        background: #e0e0e0;
+    }
+
+    .divider span {
+        background: white;
+        padding: 0 1rem;
+        position: relative;
+        color: #999;
+        font-size: 0.85rem;
+    }
+
+    .track-btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .track-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 51, 102, 0.3);
+    }
+
+    .help-text {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 0.5rem;
+    }
+
+    .security-note {
+        background: #f0f9ff;
+        border: 1px solid #bfdbfe;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+        color: #1e40af;
+    }
+
+    .security-note i {
+        margin-right: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="track-container">
+    <div class="track-card">
+        <div class="track-header">
+            <i class="fas fa-box-open"></i>
+            <h1>Track Your Order</h1>
+            <p>Enter your order details to see the current status</p>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" style="padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; 
+            {% if message.tags == 'error' %}background: #fee; border: 1px solid #fcc; color: #c33;{% endif %}
+            {% if message.tags == 'success' %}background: #efe; border: 1px solid #cfc; color: #3c3;{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <form method="get" action="{% url 'orders:track_order' %}">
+            <div class="form-group">
+                <label for="order_id">
+                    <i class="fas fa-hashtag"></i> Order ID *
+                </label>
+                <input type="text" id="order_id" name="order_id" class="form-control" placeholder="e.g., ORD-87DFCDD4"
+                    {% if order_id %}value="{{ order_id }}" {% endif %} required>
+                <p class="help-text">Found in your order confirmation email</p>
+            </div>
+
+            {% if not user.is_authenticated %}
+            <div class="divider">
+                <span>AND</span>
+            </div>
+
+            <div class="form-group">
+                <label for="email">
+                    <i class="fas fa-envelope"></i> Email Address
+                </label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="email@example.com">
+                <p class="help-text">Email used when placing the order</p>
+            </div>
+
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <div class="form-group">
+                <label for="mobile">
+                    <i class="fas fa-phone"></i> Mobile Number
+                </label>
+                <input type="tel" id="mobile" name="mobile" class="form-control" placeholder="9876543210"
+                    pattern="[0-9]{10}">
+                <p class="help-text">Mobile number used when placing the order</p>
+            </div>
+
+            <div class="security-note">
+                <i class="fas fa-shield-alt"></i>
+                <strong>Privacy Protected:</strong> For security, we require your email or mobile number to verify order
+                ownership.
+            </div>
+            {% endif %}
+
+            <button type="submit" class="track-btn">
+                <i class="fas fa-search"></i> Track Order
+            </button>
+        </form>
+
+        {% if user.is_authenticated %}
+        <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #eee;">
+            <p style="color: #666; font-size: 0.9rem;">
+                Want to see all your orders?
+                <a href="{% url 'orders:my_orders' %}" style="color: var(--primary); font-weight: 600;">View My Orders
+                    →</a>
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

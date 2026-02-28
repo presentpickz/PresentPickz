@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Verify OTP - Present Pickz{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 class="auth-title">Verify OTP</h2>
+            <p class="auth-subtitle">Enter the OTP sent to your email to reset your password.</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {% if messages %}
+            <div style="margin-bottom: 1.5rem;">
+                {% for message in messages %}
+                <div style="background: {% if message.tags == 'error' %}#FFF5F5{% else %}#F0FFF4{% endif %}; 
+                            color: {% if message.tags == 'error' %}#C53030{% else %}#2F855A{% endif %}; 
+                            padding: 1rem; border-radius: 8px; font-size: 0.9rem; 
+                            border: 1px solid {% if message.tags == 'error' %}#FEB2B2{% else %}#9AE6B4{% endif %};">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if form.non_field_errors %}
+            <div
+                style="background: #FFF5F5; color: #C53030; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; border: 1px solid #FEB2B2;">
+                {% for error in form.non_field_errors %}
+                {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% for field in form %}
+            <div class="form-group">
+                <label class="form-label">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <small style="color: #C53030; display: block; margin-top: 0.4rem; font-size: 0.85rem;">{{ field.errors.0
+                    }}</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="cta-btn"
+                style="width: 100%; border-radius: 12px; height: 50px; font-size: 1rem; margin-top: 1rem;">
+                Verify Code
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Did not receive the code? <br>
+            Please check your spam folder or contact support.
+        </div>
+    </div>
+</div>
+{% endblock %}

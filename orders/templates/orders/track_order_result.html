@@ -1,0 +1,1 @@
+{% extends 'base.html' %} {% block content %}<div class='container py-5'><h1>Order Status: {{ order.get_status_display }}</h1><p>Order ID: {{ order.order_id }}</p><p>Total: {{ order.total_amount }}</p></div>{% endblock %}
