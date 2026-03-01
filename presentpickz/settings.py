@@ -151,8 +151,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'core' / 'static',
+    ('media', BASE_DIR / 'media'),  # Mapping media to static for high-speed FREE serving
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 # High-Performance Static & Media Files (100% FREE)
 STORAGES = {
     "staticfiles": {
@@ -167,12 +169,8 @@ WHITENOISE_MANIFEST_STRICT = False
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_MAX_AGE = 31536000
 
-# FIXED: Ensure media is served by WhiteNoise in production
-# This maps the /media/ URL to the actual media folder on the server
-WHITENOISE_ROOT = BASE_DIR / 'media' 
-
-
-MEDIA_URL = '/media/'
+# Use static URL for media in production for extreme speed & free hosting
+MEDIA_URL = '/static/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
