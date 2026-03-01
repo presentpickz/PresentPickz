@@ -14,11 +14,13 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost 127.0.0.1 .railway.app').s
 
 INSTALLED_APPS = [
     'jazzmin',
+    'cloudinary_storage',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary',
     'django.contrib.staticfiles',
     'core',
     'products',
@@ -150,18 +152,25 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# High-Performance Static Files (WhiteNoise)
+# High-Performance Static & Media Files
 STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
 }
 
+# Cloudinary Config
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+
 WHITENOISE_MANIFEST_STRICT = False
-WHITENOISE_USE_FINDERS = True  # CRITICAL: Helps Railway find CSS if collectstatic is slow
+WHITENOISE_USE_FINDERS = True
 WHITENOISE_MAX_AGE = 31536000
 
 
