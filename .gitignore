@@ -16,8 +16,8 @@ env/
 db.sqlite3
 db.sqlite3-journal
 
-# Static Files (collected)
-staticfiles/
+# Static Files (allow pushing pre-collected)
+# staticfiles/  <-- REMOVED per user request
 
 # Media uploads (only ignore user profile photos)
 media/profile_photos/*

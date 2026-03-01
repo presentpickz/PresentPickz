@@ -148,10 +148,10 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'core' / 'static',
-    ('media', BASE_DIR / 'media'),  # Mapping media to static for high-speed FREE serving
+    ('media', BASE_DIR / 'media'),  # PRO TIP: Mapping media to static gives you 100% FREE high-speed hosting!
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
