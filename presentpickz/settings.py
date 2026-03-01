@@ -53,7 +53,7 @@ SOCIALACCOUNT_QUERY_EMAIL = True
 # Authentication settings (Optimized for modern Allauth 65+)
 ACCOUNT_PRESERVE_USERNAME_CASING = False
 ACCOUNT_SIGNUP_FIELDS = ['email', 'password1', 'password2']
-ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_LOGIN_METHODS = ['email']
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False  # FIXED: Removed old warnings
@@ -151,10 +151,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'core' / 'static',
-    ('media', BASE_DIR / 'media'),  # FIXED: Map images to high-speed storage under /media/
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
 # High-Performance Static & Media Files (100% FREE)
 STORAGES = {
     "staticfiles": {
@@ -168,6 +166,10 @@ STORAGES = {
 WHITENOISE_MANIFEST_STRICT = False
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_MAX_AGE = 31536000
+
+# FIXED: Ensure media is served by WhiteNoise in production
+# This maps the /media/ URL to the actual media folder on the server
+WHITENOISE_ROOT = BASE_DIR / 'media' 
 
 
 MEDIA_URL = '/media/'
