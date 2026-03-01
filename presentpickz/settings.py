@@ -13,6 +13,7 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost 127.0.0.1 .railway.app').split()
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -149,7 +150,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # WhiteNoise storage for efficient static files serving
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -191,3 +192,38 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Jazzmin Settings for Premium Dashboard
+JAZZMIN_SETTINGS = {
+    "site_title": "Present Pickz Admin",
+    "site_header": "Present Pickz",
+    "site_brand": "Present Pickz",
+    "site_logo": "images/brand_logo.jpg",
+    "login_logo": "images/brand_logo.jpg",
+    "welcome_sign": "Welcome to Present Pickz Admin",
+    "copyright": "Present Pickz Ltd",
+    "search_model": ["auth.User", "products.Product"],
+    "user_avatar": None,
+    "topmenu_links": [
+        {"name": "Home", "url": "home", "permissions": ["auth.view_user"]},
+    ],
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "products.Product": "fas fa-gift",
+        "products.Category": "fas fa-list",
+        "orders.Order": "fas fa-shopping-cart",
+        "orders.Refund": "fas fa-undo",
+    },
+    "order_with_respect_to": ["products", "orders", "auth"],
+    "theme": "flatly",
+    "dark_mode_theme": "darkly",
+}
+
+JAZZMIN_UI_LOGS = {
+    "theme": "flatly",
+    "dark_mode_theme": "darkly",
+}
