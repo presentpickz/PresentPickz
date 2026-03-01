@@ -161,7 +161,9 @@ STORAGES = {
 }
 
 WHITENOISE_MANIFEST_STRICT = False
-WHITENOISE_MAX_AGE = 31536000  # Cache for 1 year
+WHITENOISE_USE_FINDERS = True  # CRITICAL: Helps Railway find CSS if collectstatic is slow
+WHITENOISE_MAX_AGE = 31536000
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
