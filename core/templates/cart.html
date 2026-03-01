@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Bag | Present Pickz</title>
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
-    <link rel="icon" type="image/jpg" href="{% static 'images/brand_logo.jpg' %}?v={% now 'U' %}">
+    <link rel="icon" type="image/jpg" href="{% static 'images/brand_logo.jpg' %}">
     <style>
         .cart-grid {
             display: grid;
@@ -65,7 +65,7 @@
     <nav class="navbar">
         <div class="container nav-content">
             <a href="{% url 'home' %}" class="nav-logo">
-                <img src="{% static 'images/brand_logo.jpg' %}?v={% now 'U' %}" alt="Present Pickz"
+                <img src="{% static 'images/brand_logo.jpg' %}" alt="Present Pickz"
                     style="height: 40px; vertical-align: middle;">
             </a>
             <div class="nav-links">

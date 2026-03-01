@@ -6,14 +6,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Present Pickz - Loading</title>
-    <link rel="stylesheet" href="{% static 'css/splash.css' %}?v={% now 'U' %}">
+    <link rel="stylesheet" href="{% static 'css/splash.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Montserrat:wght@400;600;700&display=swap"
         rel="stylesheet">
     <meta name="description" content="Present Pickz - Curated Joy, Every Gift">
-    <link rel="icon" type="image/jpg" href="{% static 'images/brand_logo.jpg' %}?v={% now 'U' %}">
+    <link rel="icon" type="image/jpg" href="{% static 'images/brand_logo.jpg' %}">
 </head>
 
 <body>
@@ -23,7 +23,7 @@
     <!-- Center Content -->
     <div class="splash-content">
         <div class="logo-wrapper">
-            <img src="{% static 'images/brand_logo.jpg' %}?v={% now 'U' %}" alt="Present Pickz" class="splash-logo">
+            <img src="{% static 'images/brand_logo.jpg' %}" alt="Present Pickz" class="splash-logo">
         </div>
 
         <h1 class="brand-name">Present Pickz</h1>
@@ -64,16 +64,14 @@
             container.appendChild(c);
         }
 
-        // ── Redirect after splash ──
+        // ── Redirect after splash (fast transition) ──
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.body.classList.add('fade-out');
                 setTimeout(() => {
-                    // Set cookie so middleware skips splash on next request
-                    document.cookie = 'from_splash=1; path=/; max-age=5';
                     window.location.href = '{% url "home" %}';
-                }, 800);
-            }, 3000);
+                }, 600);
+            }, 2000);
         });
     </script>
 </body>

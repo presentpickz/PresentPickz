@@ -4,32 +4,25 @@ from django.utils.deprecation import MiddlewareMixin
 
 class SplashScreenMiddleware(MiddlewareMixin):
     """
-    Show splash on every homepage visit, using short-lived cookie to prevent loop.
+    Show splash screen only ONCE per browser session on the homepage.
+    Uses Django sessions for reliable tracking (not short-lived cookies).
     """
     
     def process_request(self, request):
-        # Skip splash for admin, API, static files, and media
-        skip_paths = [
-            '/admin/',
-            '/api/',
-            '/static/',
-            '/media/',
-            '/accounts/',
-            '/shop/',
-            '/cart/',
-            '/orders/',
-            '/users/',
-        ]
-        
-        if any(request.path.startswith(path) for path in skip_paths):
+        # Only show splash on homepage
+        if request.path != '/':
             return None
         
-        # Check if we just came from splash (cookie set by JavaScript)
-        if request.COOKIES.get('from_splash'):
+        # Skip for AJAX requests
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return None
         
-        # Show splash on homepage
-        if request.path == '/':
-            return render(request, 'core/splash.html')
+        # Check if user has already seen the splash this session
+        if request.session.get('splash_seen'):
+            return None
         
-        return None
+        # Mark splash as seen in session
+        request.session['splash_seen'] = True
+        
+        # Show the splash screen
+        return render(request, 'core/splash.html')
