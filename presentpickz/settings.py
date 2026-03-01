@@ -151,7 +151,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'core' / 'static',
-    ('media', BASE_DIR / 'media'),  # PRO TIP: Mapping media to static gives you 100% FREE high-speed hosting!
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
@@ -169,8 +168,8 @@ WHITENOISE_MANIFEST_STRICT = False
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_MAX_AGE = 31536000
 
-# Use static URL for media in production for extreme speed & free hosting
-MEDIA_URL = '/static/media/'
+# Standard media settings for stability
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 

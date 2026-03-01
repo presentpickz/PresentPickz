@@ -151,6 +151,21 @@ ul {
     .container {
         content-visibility: auto;
         contain-intrinsic-size: 1px 500px;
+        padding-left: 1.2rem;
+        padding-right: 1.2rem;
+    }
+
+    /* Responsive typography */
+    h1 {
+        font-size: 1.8rem !important;
+    }
+
+    h2 {
+        font-size: 1.5rem !important;
+    }
+
+    h3 {
+        font-size: 1.2rem !important;
     }
 }
 
@@ -1176,7 +1191,6 @@ ul {
     .nav-left {
         gap: 0.8rem;
         width: 100px;
-        /* Increased width to accommodate more gap */
     }
 
     .menu-toggle {
@@ -1193,26 +1207,27 @@ ul {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         width: auto;
         justify-content: center;
         margin: 0;
+        white-space: nowrap;
     }
 
     .logo-img {
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
     }
 
     .logo-text,
     .logo-highlight {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
     }
 
     /* Right side: Icons */
     .nav-right {
-        gap: 0.5rem;
-        width: 80px;
+        gap: 0.3rem;
+        width: 70px;
         justify-content: flex-end;
     }
 
@@ -1390,4 +1405,76 @@ ul {
 .btn-modal-confirm:hover {
     background: #b91c1c;
     transform: translateY(-1px);
+}
+
+/* =========================================
+   ULTIMATE MOBILE RESPONSIVENESS FIXES
+   ========================================= */
+
+@media (max-width: 768px) {
+
+    /* 2-Column Grid for Products on Mobile */
+    .products-grid,
+    .carousel-track {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.8rem !important;
+        padding: 0.5rem !important;
+    }
+
+    .product-card,
+    .product-card-mini {
+        width: 100% !important;
+    }
+
+    .product-info,
+    .product-card-mini div[style*="padding: 1.5rem"] {
+        padding: 0.8rem !important;
+    }
+
+    .product-name,
+    h4[style*="margin: 0.5rem 0"] {
+        font-size: 0.9rem !important;
+        margin-bottom: 0.3rem !important;
+    }
+
+    .current-price {
+        font-size: 1rem !important;
+    }
+
+    .original-price,
+    .discount {
+        font-size: 0.75rem !important;
+    }
+
+    /* Category Grid mobile */
+    .category-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+
+    .category-card {
+        height: 200px !important;
+    }
+
+    /* Hero Text Scaling */
+    .hero-title {
+        font-size: 2.2rem !important;
+        line-height: 1.2 !important;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem !important;
+    }
+}
+
+/* Tiny Screen Protection (iPhone SE, etc) */
+@media (max-width: 350px) {
+    .products-grid {
+        grid-template-columns: 1fr !important;
+        /* Revert to 1 column if screen is TOO small */
+    }
+
+    .logo-text {
+        display: none !important;
+    }
 }
