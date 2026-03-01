@@ -101,15 +101,17 @@
                 <!-- Wishlist Icon Only -->
                 <a href="{% url 'users:wishlist' %}" class="icon-btn tooltip-trigger" title="Wishlist">
                     <i class="far fa-heart"></i>
-                    <span class="badge wishlist-count" {% if not wishlist_count %}style="display: none;" {% endif %}>{{
-                        wishlist_count|default:0 }}</span>
+                    {% if wishlist_count > 0 %}
+                    <span class="badge wishlist-count">{{ wishlist_count }}</span>
+                    {% endif %}
                 </a>
 
                 <!-- Cart Icon -->
                 <a href="{% url 'cart:cart' %}" class="icon-btn tooltip-trigger" title="Cart">
                     <i class="fas fa-shopping-bag"></i>
-                    <span class="badge cart-count" {% if not cart_count %}style="display: none;" {% endif %}>{{
-                        cart_count|default:0 }}</span>
+                    {% if cart_count > 0 %}
+                    <span class="badge cart-count">{{ cart_count }}</span>
+                    {% endif %}
                 </a>
 
                 {% if user.is_authenticated %}
