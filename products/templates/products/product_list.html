@@ -47,9 +47,16 @@
 
     .products-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 2rem;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1rem;
         margin-bottom: 4rem;
+    }
+
+    @media (min-width: 600px) {
+        .products-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
     }
 
     .product-card {
@@ -120,11 +127,17 @@
     }
 
     .product-info {
-        padding: 1.5rem;
+        padding: 1rem;
+    }
+
+    @media (min-width: 600px) {
+        .product-info {
+            padding: 1.5rem;
+        }
     }
 
     .product-category {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         color: var(--text-muted);
         margin-bottom: 0.5rem;
         text-transform: uppercase;
@@ -132,9 +145,15 @@
     }
 
     .product-name {
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         margin-bottom: 0.5rem;
         line-height: 1.4;
+    }
+
+    @media (min-width: 600px) {
+        .product-name {
+            font-size: 1.1rem;
+        }
     }
 
     .product-price-row {
