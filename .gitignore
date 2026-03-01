@@ -19,7 +19,7 @@ db.sqlite3-journal
 # Static Files (collected)
 staticfiles/
 
-# Media uploads (user-generated content)
+# Media uploads (only ignore user profile photos)
 media/profile_photos/*
 !media/profile_photos/.gitkeep
 
