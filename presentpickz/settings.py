@@ -50,11 +50,13 @@ SOCIALACCOUNT_ADAPTER = 'users.adapter.MySocialAccountAdapter'
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True 
 SOCIALACCOUNT_QUERY_EMAIL = True
 
+# Authentication settings (Optimized for modern Allauth 65+)
 ACCOUNT_PRESERVE_USERNAME_CASING = False
 ACCOUNT_SIGNUP_FIELDS = ['email', 'password1', 'password2']
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False  # FIXED: Removed old warnings
 
 # CRITICAL: Disable the signup form completely for direct social login
 SOCIALACCOUNT_SIGNUP_FORM_CLASS = None
@@ -149,6 +151,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'core' / 'static',
+    ('media', BASE_DIR / 'media'),  # FIXED: Map images to high-speed storage under /media/
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
