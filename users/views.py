@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from products.models import Product
 from .models import Wishlist
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
@@ -64,12 +64,11 @@ def signup_view(request):
 
     return render(request, 'users/signup.html', {'form': form})
 
+@csrf_exempt
 def logout_view(request):
-    """Handle user logout"""
-    if request.method == 'POST' or request.method == 'GET':
-        logout(request)
-        messages.info(request, "You have been logged out.")
-        return redirect('home')
+    """Handle user logout - CSRF exempt because logout is safe (just clears session)"""
+    logout(request)
+    messages.info(request, "You have been logged out.")
     return redirect('home')
 
 def wishlist_view(request):

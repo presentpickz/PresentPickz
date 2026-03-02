@@ -16,11 +16,10 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('accounts/', include('allauth.urls')),
     
-    # ALWAYS serve media files (works for ALL users, logged in or not)
+    # ALWAYS serve media files (works in debug AND production)
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
 
-# Also add static files in debug mode
+# In debug mode, also serve static files locally
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
