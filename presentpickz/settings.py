@@ -18,11 +18,23 @@ if os.getenv('CUSTOM_DOMAIN'):
 # CSRF Protection - Trust your domains for form submissions (login, logout, checkout, etc.)
 CSRF_TRUSTED_ORIGINS = [
     'https://web-production-54152.up.railway.app',
+    'http://web-production-54152.up.railway.app',
     'https://presentpickz.com',
+    'http://presentpickz.com',
     'https://www.presentpickz.com',
+    'http://www.presentpickz.com',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
 ]
 if os.getenv('CUSTOM_DOMAIN'):
     CSRF_TRUSTED_ORIGINS.append(f"https://{os.getenv('CUSTOM_DOMAIN')}")
+    CSRF_TRUSTED_ORIGINS.append(f"http://{os.getenv('CUSTOM_DOMAIN')}")
+
+# Cookie Security Settings
+CSRF_COOKIE_SECURE = not DEBUG          # HTTPS only in production
+SESSION_COOKIE_SECURE = not DEBUG       # HTTPS only in production
+CSRF_COOKIE_HTTPONLY = False            # Allow JS to read CSRF token
+CSRF_USE_SESSIONS = False               # Use cookie-based CSRF (more reliable)
 
 INSTALLED_APPS = [
     'jazzmin',
