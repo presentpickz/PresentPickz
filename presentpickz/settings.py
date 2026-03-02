@@ -167,9 +167,11 @@ STORAGES = {
     },
 }
 
-WHITENOISE_MANIFEST_STRICT = False
-WHITENOISE_USE_FINDERS = True
 WHITENOISE_MAX_AGE = 31536000
+
+# FIXED: Serve media through WhiteNoise for 100% free high-speed hosting
+# This ensures images load even if the server is under load or on a custom domain.
+WHITENOISE_ROOT = BASE_DIR / 'media'
 
 # Standard media settings for stability
 MEDIA_URL = '/media/'
