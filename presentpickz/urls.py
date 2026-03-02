@@ -16,10 +16,11 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('accounts/', include('allauth.urls')),
     
-    # Serve media files in production (Django's static() silently fails when DEBUG=False)
+    # ALWAYS serve media files (works for ALL users, logged in or not)
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
 
-# Static files fallback (only works in debug, WhiteNoise handles production)
+# Also add static files in debug mode
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -167,10 +167,11 @@ STORAGES = {
     },
 }
 
-WHITENOISE_MAX_AGE = 31536000
+WHITENOISE_MANIFEST_STRICT = False  # Don't crash on missing files
+WHITENOISE_USE_FINDERS = True       # Find files even without collectstatic
+WHITENOISE_MAX_AGE = 31536000       # Cache for 1 year
 
-# FIXED: Serve media through WhiteNoise for 100% free high-speed hosting
-# This ensures images load even if the server is under load or on a custom domain.
+# Serve media files through WhiteNoise (100% free high-speed hosting)
 WHITENOISE_ROOT = BASE_DIR / 'media'
 
 # Standard media settings for stability
