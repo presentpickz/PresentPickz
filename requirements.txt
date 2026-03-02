@@ -21,6 +21,10 @@ python-dotenv==1.0.0
 # Image Processing
 pillow==12.1.0
 
+# Cloud Image Storage (FREE - 25GB)
+cloudinary==1.44.1
+django-cloudinary-storage==0.3.0
+
 # Security
 cryptography==46.0.3
 PyJWT==2.10.1

@@ -56,6 +56,10 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    
+    # Cloud Image Storage (FREE 25GB)
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 SITE_ID = 1
@@ -184,13 +188,20 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
 }
 
 WHITENOISE_MANIFEST_STRICT = False  # Don't crash on missing files
 WHITENOISE_USE_FINDERS = True       # Find files even without collectstatic
 WHITENOISE_MAX_AGE = 31536000       # Cache for 1 year
+
+# Cloudinary Configuration (FREE 25GB Cloud Image Storage)
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', ''),
+}
 
 # Media settings
 MEDIA_URL = '/media/'
