@@ -222,6 +222,9 @@ JAZZMIN_SETTINGS = {
     "site_brand": "Present Pickz",
     "site_logo": "images/brand_logo.jpg",
     "login_logo": "images/brand_logo.jpg",
+    "login_logo_dark": "images/brand_logo.jpg",
+    "site_logo_classes": "img-circle",  # Makes the sidebar logo circular
+    "site_icon": "images/brand_logo.jpg",  # Favicon
     "welcome_sign": "Welcome to Present Pickz Admin",
     "copyright": "Present Pickz Ltd",
     "search_model": ["auth.User", "products.Product"],
@@ -243,6 +246,7 @@ JAZZMIN_SETTINGS = {
     "order_with_respect_to": ["products", "orders", "auth"],
     "theme": "flatly",
     "dark_mode_theme": "darkly",
+    "custom_css": "css/admin_custom.css",
 }
 
 JAZZMIN_UI_LOGS = {

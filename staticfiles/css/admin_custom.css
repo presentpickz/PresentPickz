@@ -1,0 +1,93 @@
+/* =========================================
+   ADMIN PANEL CUSTOM STYLES
+   Present Pickz - Premium Admin Design
+   ========================================= */
+
+/* Login Page Logo - Properly Sized */
+.login-logo img,
+.login-box .login-logo img,
+#login-form .login-logo img {
+    max-width: 120px !important;
+    max-height: 120px !important;
+    width: 120px !important;
+    height: auto !important;
+    object-fit: contain !important;
+    border-radius: 50% !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    background: white;
+    padding: 8px;
+    margin: 0 auto;
+    display: block;
+}
+
+/* Sidebar Logo - Compact */
+.brand-link img,
+.main-sidebar .brand-link img {
+    max-width: 33px !important;
+    max-height: 33px !important;
+    width: 33px !important;
+    height: 33px !important;
+    object-fit: contain !important;
+    border-radius: 50% !important;
+    margin-right: 8px;
+}
+
+/* Top Navbar Logo */
+.navbar-brand img {
+    max-width: 33px !important;
+    max-height: 33px !important;
+    object-fit: contain !important;
+}
+
+/* Login Page Enhancements */
+.login-page {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
+}
+
+.login-box {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.card.card-outline {
+    border-top: 3px solid #b76e79 !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+}
+
+.login-card-body {
+    padding: 2rem !important;
+}
+
+.login-box-msg {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+/* Button Styling */
+.btn-primary {
+    background: linear-gradient(135deg, #b76e79, #9f5c66) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 12px rgba(183, 110, 121, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(183, 110, 121, 0.4) !important;
+}
+
+/* Sidebar Styling */
+.main-sidebar {
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Dashboard Cards */
+.small-box {
+    border-radius: 12px !important;
+    overflow: hidden;
+}
