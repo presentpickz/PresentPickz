@@ -10,7 +10,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-fallback-key')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost 127.0.0.1 .railway.app').split()
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost 127.0.0.1 .railway.app .up.railway.app').split()
+# Add your Namecheap domain here or in Railway Variables
+if os.getenv('CUSTOM_DOMAIN'):
+    ALLOWED_HOSTS.append(os.getenv('CUSTOM_DOMAIN'))
 
 INSTALLED_APPS = [
     'jazzmin',
