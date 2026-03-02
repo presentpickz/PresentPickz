@@ -68,8 +68,13 @@
         .hero-content {
             backdrop-filter: none;
             -webkit-backdrop-filter: none;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.55);
             /* Darker solid background for readability */
+            margin: 0 auto;
+            width: 88%;
+            max-width: 400px;
+            padding: 2rem 1.5rem;
+            text-align: center;
         }
     }
 
@@ -249,27 +254,41 @@
     @media (max-width: 768px) {
 
         /* Hero Mobile Responsiveness */
+        .hero {
+            height: auto;
+            min-height: 450px;
+            max-height: 80vh;
+            padding: 3rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .hero-content {
             margin-left: 0;
             padding: 2rem 1.5rem;
-            width: 90%;
+            width: 88%;
+            max-width: 400px;
             margin: 0 auto;
             text-align: center;
         }
 
         .hero-title {
-            font-size: 2.2rem;
+            font-size: 2rem;
             line-height: 1.2;
+            margin-bottom: 1rem;
         }
 
         .hero-subtitle {
-            font-size: 1rem;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
         }
 
-        .hero {
-            height: auto;
-            min-height: 500px;
-            padding: 4rem 0;
+        .cta-btn {
+            padding: 0.85rem 2rem;
+            font-size: 0.95rem;
+            width: 100%;
+            max-width: 280px;
         }
 
         .featured-collection {
@@ -280,7 +299,6 @@
             padding: 2.5rem 2rem;
             text-align: center;
             order: 1;
-            /* Ensure text is first */
         }
 
         .featured-text .cta-btn {
@@ -291,11 +309,23 @@
         .featured-image-container {
             height: 250px;
             order: 2;
-            /* Image second */
         }
 
         .featured-gradient {
             background: linear-gradient(180deg, var(--dark) 0%, transparent 50%);
+        }
+
+        .gift-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .section {
+            padding: 3rem 0;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
         }
     }
 
