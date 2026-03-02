@@ -1216,6 +1216,7 @@ ul {
         margin: 0;
         white-space: nowrap;
         letter-spacing: 1px;
+        overflow: hidden;
     }
 
     .logo-img {
@@ -1473,12 +1474,37 @@ ul {
     }
 }
 
-/* Small Screen Protection (iPhone SE, narrower devices) */
-@media (max-width: 400px) {
-    .logo {
-        font-size: 0.85rem !important;
-        letter-spacing: 0.5px !important;
+/* Small-Medium Screen Protection (up to 420px devices like 364px, 375px, 390px) */
+@media (max-width: 420px) {
+    .nav-container {
+        padding: 0 0.6rem !important;
+    }
+
+    .nav-left {
         gap: 0.3rem !important;
+        min-width: 50px !important;
+    }
+
+    .nav-right {
+        gap: 0.2rem !important;
+        min-width: 50px !important;
+    }
+
+    .icon-btn {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 1rem !important;
+    }
+
+    .menu-toggle {
+        font-size: 1.2rem !important;
+    }
+
+    .logo {
+        font-size: 0.82rem !important;
+        letter-spacing: 0px !important;
+        gap: 0.3rem !important;
+        max-width: calc(100% - 120px) !important;
     }
 
     .logo-img {
@@ -1488,16 +1514,34 @@ ul {
 
     .logo-text,
     .logo-highlight {
-        font-size: 0.85rem !important;
+        font-size: 0.82rem !important;
     }
 }
 
 /* Tiny Screen Protection (iPhone SE, etc) */
-@media (max-width: 320px) {
+@media (max-width: 340px) {
     .products-grid {
         grid-template-columns: 1fr !important;
     }
 
+    .logo {
+        font-size: 0.75rem !important;
+        gap: 0.2rem !important;
+    }
+
+    .logo-img {
+        width: 20px !important;
+        height: 20px !important;
+    }
+
+    .logo-text,
+    .logo-highlight {
+        font-size: 0.75rem !important;
+    }
+}
+
+/* Ultra-tiny Screen Protection */
+@media (max-width: 300px) {
     .logo-text {
         display: none !important;
     }
