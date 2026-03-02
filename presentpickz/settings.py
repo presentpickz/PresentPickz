@@ -15,6 +15,15 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost 127.0.0.1 .railway.app .up
 if os.getenv('CUSTOM_DOMAIN'):
     ALLOWED_HOSTS.append(os.getenv('CUSTOM_DOMAIN'))
 
+# CSRF Protection - Trust your domains for form submissions (login, logout, checkout, etc.)
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-54152.up.railway.app',
+    'https://presentpickz.com',
+    'https://www.presentpickz.com',
+]
+if os.getenv('CUSTOM_DOMAIN'):
+    CSRF_TRUSTED_ORIGINS.append(f"https://{os.getenv('CUSTOM_DOMAIN')}")
+
 INSTALLED_APPS = [
     'jazzmin',
     'django.contrib.admin',
