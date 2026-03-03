@@ -37,11 +37,11 @@ class Product(models.Model):
 
     def get_image_url(self):
         """Return image URL or placeholder"""
-        if self.image and hasattr(self.image, 'url'):
-            try:
+        try:
+            if self.image and self.image.name:
                 return self.image.url
-            except:
-                return '/static/images/product_placeholder.png'
+        except Exception:
+            pass
         return '/static/images/product_placeholder.png'
 
     @property

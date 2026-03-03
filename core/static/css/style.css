@@ -1183,7 +1183,7 @@ ul {
     .nav-container {
         justify-content: space-between;
         padding: 0 0.8rem;
-        /* Remove position: relative — logo no longer absolute */
+        position: relative;
     }
 
     /* Left side: Search + Hamburger */
@@ -1191,6 +1191,7 @@ ul {
         gap: 0.5rem;
         width: auto;
         flex-shrink: 0;
+        z-index: 2;
     }
 
     .menu-toggle {
@@ -1202,17 +1203,18 @@ ul {
         border: none;
     }
 
-    /* Flexbox Centered Logo (no overlap) */
+    /* Absolute Center Logo — always perfectly centered */
     .logo {
-        position: static;
-        flex: 1;
-        justify-content: center;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
         margin: 0;
         white-space: nowrap;
-        overflow: hidden;
         font-size: 0.95rem;
         letter-spacing: 0.5px;
         gap: 0.4rem;
+        z-index: 1;
     }
 
     .logo-img {
@@ -1232,6 +1234,7 @@ ul {
         width: auto;
         flex-shrink: 0;
         justify-content: flex-end;
+        z-index: 2;
     }
 
     .icon-btn {
