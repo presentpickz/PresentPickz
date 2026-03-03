@@ -18,12 +18,8 @@ def add_to_cart(request, product_id):
             'image': product.get_image_url(),
         }
     
-    # Handle Gift Options
-    if request.method == 'POST':
-        if request.POST.get('gift_wrap'):
-            cart[cart_id]['gift_wrap'] = True
-        if request.POST.get('gift_message'):
-            cart[cart_id]['gift_message'] = request.POST.get('gift_message')
+    # Auto-add Gift Wrap for every product
+    cart[cart_id]['gift_wrap'] = True
 
     request.session['cart'] = cart
     messages.success(request, f"{product.name} added to cart!")
