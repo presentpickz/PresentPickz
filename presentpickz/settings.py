@@ -185,7 +185,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # High-Performance Static & Media Files (100% FREE)
 STORAGES = {
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
@@ -194,7 +194,7 @@ STORAGES = {
 
 WHITENOISE_MANIFEST_STRICT = False  # Don't crash on missing files
 WHITENOISE_USE_FINDERS = True       # Find files even without collectstatic
-WHITENOISE_MAX_AGE = 31536000       # Cache for 1 year
+WHITENOISE_MAX_AGE = 31536000       # Cache for 1 year (safe with manifest hashing)
 
 # Cloudinary Configuration (FREE 25GB Cloud Image Storage)
 CLOUDINARY_STORAGE = {

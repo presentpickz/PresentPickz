@@ -1,0 +1,60 @@
+/* Cart Page Styles - Rose Gold Theme */
+.cart-layout {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr;
+    gap: 40px;
+}
+
+.cart-item {
+    display: flex;
+    gap: 24px;
+    padding: 24px;
+    background: #f8eff0;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    align-items: center;
+    border: 1px solid var(--border-soft, #E8CDD2);
+    box-shadow: 0 4px 16px rgba(183, 110, 121, 0.08);
+    transition: all 0.3s ease;
+}
+
+.cart-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(183, 110, 121, 0.15);
+}
+
+.cart-item-image img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--border-soft, #E8CDD2);
+}
+
+.cart-summary {
+    background: #f8eff0;
+    padding: 32px;
+    border-radius: 20px;
+    height: fit-content;
+    border: 1px solid var(--border-soft, #E8CDD2);
+    box-shadow: 0 8px 32px rgba(183, 110, 121, 0.12);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    color: var(--text-body, #5A4F52);
+}
+
+.summary-row.total {
+    border-top: 1px solid var(--border-divider, #E3BFC4);
+    padding-top: 24px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-heading, #2F2A2C);
+}
+
+.summary-row.total .amount {
+    color: var(--text-price, #7A3F46);
+}
