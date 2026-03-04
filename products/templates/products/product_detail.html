@@ -236,8 +236,8 @@
 
         <!-- Info -->
         <div class="product-info-col">
-            <div class="stock-status"
-                style="{% if product.stock <= 0 %}background: #fee2e2; color: #991b1b;{% endif %}">
+            <div class="stock-status" {% if product.stock <=0 %}style="background: #fee2e2; color: #991b1b;" {% endif
+                %}>
                 {% if product.stock > 0 %}
                 In Stock
                 {% else %}
@@ -309,7 +309,7 @@
 
     <!-- Reviews Section -->
     <div class="reviews-section mt-5 pt-5">
-        <h3 class="mb-4">Customer Reviews ({{ reviews.count }})</h3>
+        <h3 class="mb-4">Customer Reviews ({{ reviews|length }})</h3>
 
         {% if reviews %}
         <div class="reviews-grid">

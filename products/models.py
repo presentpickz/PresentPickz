@@ -55,7 +55,10 @@ class Product(models.Model):
         reviews = self.reviews.filter(is_hidden=False)
         if reviews.exists():
             total_rating = sum(r.rating for r in reviews)
-            return round(total_rating / reviews.count(), 1)
+            # Ensure we avoid division by zero or non-numeric types
+            count = reviews.count()
+            if count > 0:
+                return round(float(total_rating) / count, 1)
         return None
     
     def review_count(self):
@@ -111,4 +114,8 @@ class Review(models.Model):
     
     def get_star_display(self):
         """Return star symbols for display"""
-        return '★' * self.rating + '☆' * (5 - self.rating)
+        try:
+            rating = int(self.rating)
+            return '★' * rating + '☆' * (5 - rating)
+        except (TypeError, ValueError):
+            return '☆' * 5
