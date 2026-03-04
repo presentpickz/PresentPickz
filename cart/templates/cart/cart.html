@@ -187,9 +187,6 @@
             <img src="{{ item.image }}" alt="{{ item.name }}">
             <div class="item-details">
                 <h3>{{ item.name }}</h3>
-                {% if item.gift_wrap %}
-                <p class="item-meta"><i class="fas fa-gift"></i> Gift Wrapped (+₹50)</p>
-                {% endif %}
             </div>
 
             <form action="{% url 'cart:update_cart' item.id %}" method="POST" class="quantity-controls">

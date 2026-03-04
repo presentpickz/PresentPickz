@@ -18,8 +18,7 @@ def add_to_cart(request, product_id):
             'image': product.get_image_url(),
         }
     
-    # Auto-add Gift Wrap for every product
-    cart[cart_id]['gift_wrap'] = True
+
 
     request.session['cart'] = cart
     messages.success(request, f"{product.name} added to cart!")
@@ -32,9 +31,6 @@ def cart(request):
     
     for product_id, item_data in cart.items():
         subtotal = float(item_data['price']) * item_data['quantity']
-        if item_data.get('gift_wrap'):
-            subtotal += 50
-        
         item_data['subtotal'] = subtotal
         item_data['id'] = product_id
         cart_items.append(item_data)
@@ -68,8 +64,6 @@ def checkout(request):
     total = 0
     for item in cart.values():
         total += float(item['price']) * item['quantity']
-        if item.get('gift_wrap'):
-            total += 50
             
     return render(request, 'cart/checkout.html', {'total': total})
 
