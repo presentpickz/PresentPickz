@@ -132,9 +132,10 @@
     /* Carousel */
     .carousel-container {
         overflow-x: auto;
-        padding-bottom: 2rem;
+        padding: 1rem 1rem 3rem;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
+        scroll-snap-type: x mandatory;
     }
 
     .carousel-container::-webkit-scrollbar {
@@ -143,24 +144,36 @@
 
     .carousel-track {
         display: flex;
-        gap: 2rem;
-        padding: 1rem;
+        gap: 1.5rem;
         width: max-content;
     }
 
     .product-card-mini {
-        width: 280px;
+        width: 260px;
         flex-shrink: 0;
-        background: #f8eff0;
-        border-radius: var(--radius-md);
+        background: #fff;
+        border-radius: 16px;
         overflow: hidden;
-        transition: var(--transition);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         border: 1px solid #f0f0f0;
+        scroll-snap-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     }
 
     .product-card-mini:hover {
-        transform: translateY(-10px);
-        box-shadow: var(--shadow-lg);
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    @media (max-width: 768px) {
+        .product-card-mini {
+            width: 80vw;
+            max-width: 280px;
+        }
+
+        .carousel-track {
+            gap: 1rem;
+        }
     }
 
     /* Categories */
@@ -491,7 +504,7 @@
 <!-- Additional Spacer -->
 <div style="height: 2rem;"></div>
 
-<!-- Customer Customer Reviews -->
+<!-- Customer Reviews -->
 <section class="section" style="background: #f8eff0;">
     <div class="container">
         <div class="section-header">

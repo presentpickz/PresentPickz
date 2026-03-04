@@ -46,8 +46,11 @@ class Product(models.Model):
 
     @property
     def discount_percentage(self):
-        if self.original_price and self.original_price > self.price:
-            return int(((self.original_price - self.price) / self.original_price) * 100)
+        try:
+            if self.original_price and self.price and self.original_price > self.price:
+                return int(((self.original_price - self.price) / self.original_price) * 100)
+        except (ZeroDivisionError, Exception):
+            pass
         return 0
     
     def average_rating(self):

@@ -28,19 +28,27 @@ def can_user_review(user, product, order):
     return True
 
 def product_list(request):
-    category_slug = request.GET.get('category')
-    categories = Category.objects.all()
-    products = Product.objects.all()
+    try:
+        category_slug = request.GET.get('category')
+        categories = Category.objects.all()
+        products = Product.objects.all().select_related('category')
 
-    if category_slug:
-        products = products.filter(category__slug=category_slug)
+        if category_slug:
+            products = products.filter(category__slug=category_slug)
 
-    context = {
-        'products': products,
-        'categories': categories,
-        'current_category': category_slug,
-    }
-    return render(request, 'products/product_list.html', context)
+        context = {
+            'products': products,
+            'categories': categories,
+            'current_category': category_slug,
+        }
+        return render(request, 'products/product_list.html', context)
+    except Exception as e:
+        print(f"Product list error: {e}")
+        # Fallback to simple list if query fails
+        return render(request, 'products/product_list.html', {
+            'products': Product.objects.all()[:20],
+            'categories': Category.objects.all(),
+        })
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)

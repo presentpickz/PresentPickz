@@ -260,17 +260,10 @@
             </a>
 
             <!-- Wishlist Button -->
-            {% if user.is_authenticated %}
-            <button class="wishlist-btn {% if product in user.wishlist.products.all %}active{% endif %}"
+            <button class="wishlist-btn {% if product.id in wishlist_product_ids %}active{% endif %}"
                 data-product-id="{{ product.id }}" aria-label="Toggle Wishlist" title="Toggle Wishlist">
-                <i class="{% if product in user.wishlist.products.all %}fas{% else %}far{% endif %} fa-heart"></i>
+                <i class="{% if product.id in wishlist_product_ids %}fas{% else %}far{% endif %} fa-heart"></i>
             </button>
-            {% else %}
-            <a href="{% url 'users:login' %}?next={{ request.path|urlencode }}" class="wishlist-btn"
-                aria-label="Login to add to wishlist" title="Login to add to wishlist">
-                <i class="far fa-heart"></i>
-            </a>
-            {% endif %}
         </div>
         {% empty %}
         <p>No products found in this category.</p>
