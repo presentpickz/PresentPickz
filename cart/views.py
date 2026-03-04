@@ -29,6 +29,10 @@ def add_to_cart(request, product_id):
     
     request.session['cart'] = cart
     messages.success(request, f"{product.name} added to cart!")
+    
+    if request.POST.get('buy_now'):
+        return redirect('cart:checkout')
+        
     return redirect('cart:cart')
 
 def cart(request):
