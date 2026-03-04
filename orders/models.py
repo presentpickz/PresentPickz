@@ -96,6 +96,22 @@ class Order(models.Model):
     def __str__(self):
         return f"Order {self.order_id} - {self.full_name}"
 
+    def decrement_stock(self):
+        """Decrease product stock for all items in this order"""
+        for item in self.items.all():
+            product = item.product
+            # Only subtract if stock > 0
+            if product.stock >= item.quantity:
+                product.stock -= item.quantity
+                product.save()
+
+    def increment_stock(self):
+        """Increase product stock for all items (e.g., on cancellation)"""
+        for item in self.items.all():
+            product = item.product
+            product.stock += item.quantity
+            product.save()
+
     def save(self, *args, **kwargs):
         if not self.order_id:
             # Generate a simple order ID if not present

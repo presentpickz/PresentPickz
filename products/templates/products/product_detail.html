@@ -236,7 +236,14 @@
 
         <!-- Info -->
         <div class="product-info-col">
-            <div class="stock-status">In Stock</div>
+            <div class="stock-status"
+                style="{% if product.stock <= 0 %}background: #fee2e2; color: #991b1b;{% endif %}">
+                {% if product.stock > 0 %}
+                In Stock
+                {% else %}
+                Out of Stock
+                {% endif %}
+            </div>
             <h1>{{ product.name }}</h1>
             {% if product.average_rating %}
             <div class="rating-display mb-2" style="color: #f59e0b; display: flex; align-items: center; gap: 0.5rem;">
@@ -259,19 +266,22 @@
                 {% csrf_token %}
                 <div class="actions desktop-actions">
                     <!-- Add to Cart Button -->
-                    <button type="submit" class="add-to-cart-btn">
-                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    <button type="submit" class="add-to-cart-btn" {% if product.stock <=0 %}disabled
+                        style="background: #ccc; cursor: not-allowed;" {% endif %}>
+                        <i class="fas fa-shopping-cart"></i>
+                        {% if product.stock > 0 %}Add to Cart{% else %}Out of Stock{% endif %}
                     </button>
                 </div>
 
                 <!-- Mobile Sticky Bar -->
                 <div class="mobile-sticky-actions">
                     <button type="submit" class="add-to-cart-btn"
-                        style="background: white; color: var(--dark); border: 1px solid var(--dark); flex: 1;">
+                        style="background: white; color: var(--dark); border: 1px solid var(--dark); flex: 1;" {% if
+                        product.stock <=0 %}disabled{% endif %}>
                         Add to Cart
                     </button>
                     <button type="submit" name="buy_now" value="true" class="add-to-cart-btn"
-                        style="flex: 1.5; background: var(--primary);">
+                        style="flex: 1.5; background: var(--primary);" {% if product.stock <=0 %}disabled{% endif %}>
                         Buy Now
                     </button>
                 </div>

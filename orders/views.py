@@ -30,9 +30,15 @@ def place_order(request):
     # Calculate Totals
     cart_total = 0
     for item in cart.values():
-        val = float(item['price']) * item['quantity']
-        cart_total += val
+        cart_total += float(item['price']) * item['quantity']
     
+    # Check final stock before creating order
+    for product_id, item_data in cart.items():
+        product = Product.objects.get(id=product_id)
+        if product.stock < item_data['quantity']:
+            messages.error(request, f"Sorry, {product.name} just went out of stock or quantity exceeds availability.")
+            return redirect('cart:cart')
+
     # Calculate Charges
     from .utils import calculate_checkout_total
     totals = calculate_checkout_total(cart_total, pincode, gift_wrap)
@@ -74,6 +80,10 @@ def place_order(request):
     if payment_method == 'COD':
         order.status = 'PLACED'
         order.save()
+        
+        # Update Stock for COD
+        order.decrement_stock()
+        
         messages.success(request, "Order placed successfully!")
         return redirect('orders:order_success', order_id=order.order_id)
     
@@ -137,6 +147,10 @@ def payment_return(request):
     if verification and verification.get('order_status') == 'PAID':
         order.status = 'CONFIRMED'
         order.save()
+        
+        # Update Stock for Online
+        order.decrement_stock()
+        
         return redirect('orders:order_success', order_id=order_id)
     else:
         order.status = 'CANCELLED' # Or keep as Failed? 'CANCELLED' is generic.

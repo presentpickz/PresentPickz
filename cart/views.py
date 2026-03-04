@@ -4,11 +4,20 @@ from django.contrib import messages
 
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    
+    # Check Stock
+    if product.stock <= 0:
+        messages.error(request, f"Sorry, {product.name} is currently out of stock.")
+        return redirect('products:product_detail', product_id=product.id)
+
     cart = request.session.get('cart', {})
     
     # Logic to add item
     cart_id = str(product_id)
     if cart_id in cart:
+        if cart[cart_id]['quantity'] + 1 > product.stock:
+            messages.warning(request, f"Only {product.stock} units of {product.name} are available.")
+            return redirect('cart:cart')
         cart[cart_id]['quantity'] += 1
     else:
         cart[cart_id] = {
@@ -18,8 +27,6 @@ def add_to_cart(request, product_id):
             'image': product.get_image_url(),
         }
     
-
-
     request.session['cart'] = cart
     messages.success(request, f"{product.name} added to cart!")
     return redirect('cart:cart')
