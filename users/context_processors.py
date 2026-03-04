@@ -6,8 +6,12 @@ def wishlist_context(request):
     """
     wishlist_count = 0
     if request.user.is_authenticated:
-        wishlist, _ = Wishlist.objects.get_or_create(user=request.user)
-        wishlist_count = wishlist.products.count()
+        try:
+            wishlist, _ = Wishlist.objects.get_or_create(user=request.user)
+            wishlist_count = wishlist.products.count()
+        except Exception as e:
+            print(f"Wishlist context error: {e}")
+            wishlist_count = 0
     else:
         # Session based wishlist for guests
         wishlist_ids = request.session.get('wishlist', [])

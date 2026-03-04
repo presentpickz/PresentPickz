@@ -236,21 +236,22 @@
             <a href="{% url 'products:product_detail' product.id %}" style="text-decoration: none; color: inherit;">
                 <div class="product-image-container">
                     <img src="{{ product.get_image_url }}" alt="{{ product.name }}" class="product-image" loading="lazy"
-                        style="{% if product.stock <= 0 %}filter: grayscale(80%); opacity: 0.7;{% endif %}">
-                    {% if product.stock <= 0 %} <span class="badge"
-                        style="background: #333; color: white; top: 1rem; left: 1rem;">SOLD OUT</span>
-                        {% elif product.is_new %}
-                        <span class="badge new">New</span>
+                        {% if product.stock <=0 %}style="filter: grayscale(80%); opacity: 0.7;" {% endif %}>
+
+                    {% if product.stock <= 0 %} <span class="badge" style="background: #333; color: white;">SOLD
+                        OUT</span>
                         {% elif product.badge %}
                         <span class="badge hot">{{ product.badge }}</span>
+                        {% elif product.is_new %}
+                        <span class="badge new">New</span>
                         {% endif %}
                 </div>
                 <div class="product-info">
-                    <div class="product-category">{{ product.category.name }}</div>
+                    <div class="product-category">{{ product.category.name|default:"General" }}</div>
                     <h3 class="product-name">{{ product.name }}</h3>
                     <div class="product-price-row">
                         <span class="current-price">₹{{ product.price }}</span>
-                        {% if product.original_price %}
+                        {% if product.original_price and product.original_price > product.price %}
                         <span class="original-price">₹{{ product.original_price }}</span>
                         <span class="discount">{{ product.discount_percentage }}% OFF</span>
                         {% endif %}
@@ -260,19 +261,12 @@
 
             <!-- Wishlist Button -->
             {% if user.is_authenticated %}
-            {% if product in user.wishlist.products.all %}
-            <button class="wishlist-btn active" data-product-id="{{ product.id }}" aria-label="Remove from wishlist"
-                title="Remove from wishlist">
-                <i class="fas fa-heart"></i>
+            <button class="wishlist-btn {% if product in user.wishlist.products.all %}active{% endif %}"
+                data-product-id="{{ product.id }}" aria-label="Toggle Wishlist" title="Toggle Wishlist">
+                <i class="{% if product in user.wishlist.products.all %}fas{% else %}far{% endif %} fa-heart"></i>
             </button>
             {% else %}
-            <button class="wishlist-btn" data-product-id="{{ product.id }}" aria-label="Add to wishlist"
-                title="Add to wishlist">
-                <i class="far fa-heart"></i>
-            </button>
-            {% endif %}
-            {% else %}
-            <a href="{% url 'users:login' %}?next={{ request.path }}" class="wishlist-btn"
+            <a href="{% url 'users:login' %}?next={{ request.path|urlencode }}" class="wishlist-btn"
                 aria-label="Login to add to wishlist" title="Login to add to wishlist">
                 <i class="far fa-heart"></i>
             </a>
