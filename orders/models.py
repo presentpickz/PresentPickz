@@ -53,6 +53,10 @@ class Order(models.Model):
     delivery_charge = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
     packing_charge = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
     
+    @property
+    def get_subtotal(self):
+        return self.total_amount - self.delivery_charge - self.packing_charge
+    
     # Gift Options
     gift_wrap = models.BooleanField(default=False)
     gift_message = models.CharField(max_length=200, blank=True)

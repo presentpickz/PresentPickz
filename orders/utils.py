@@ -8,19 +8,20 @@ def calculate_checkout_total(cart_total, pincode, gift_wrap=False):
     """
     delivery_charge = 0.0
     
+    # Check for specific pincode charge
     if pincode:
-        # Try to find specific charge for pincode
         charge_obj = DeliveryCharge.objects.filter(pincode=pincode, is_active=True).first()
         if charge_obj:
             delivery_charge = float(charge_obj.charge)
         else:
-            # Default charge if no pincode match? 
-            # Could be 0 or flat rate. Let's assume Free for now or specific logic.
-            # If I don't know, 0 is safest to avoid overcharging without reason.
-            delivery_charge = 0.0
+            # Default logic: Free delivery for orders above 999, else 50
+            delivery_charge = 0.0 if float(cart_total) >= 999 else 50.0
+    else:
+        # No pincode provided yet (should not happen in place_order but might in previews)
+        delivery_charge = 0.0 if float(cart_total) >= 999 else 50.0
     
-    # Gift wrap charge (e.g., 30 or 50 INR)
-    packing_charge = 50.0 if gift_wrap else 0.0
+    # Gift wrap charge (Set to 100 as per checkout page)
+    packing_charge = 100.0 if gift_wrap else 0.0
     
     grand_total = float(cart_total) + delivery_charge + packing_charge
     

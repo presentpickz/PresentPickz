@@ -1,165 +1,252 @@
-{% extends 'users/account/dashboard.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
-{% block account_content %}
-<div class="account-header">
-    <h1>My Orders</h1>
-    <p class="subtitle">Track and manage your orders</p>
-</div>
+{% block title %}My Orders | Present Pickz{% endblock %}
 
-{% if orders %}
-<div class="orders-list">
-    {% for order in orders %}
-    <div class="order-card">
-        <div class="order-header">
-            <div class="order-info">
-                <h3>Order #{{ order.order_id }}</h3>
-                <p class="order-date">
-                    <i class="far fa-calendar"></i>
-                    {{ order.created_at|date:"d M, Y" }}
-                </p>
-            </div>
-            <div class="order-amount">
-                <p class="amount-label">Total Amount</p>
-                <h3>₹{{ order.total_amount }}</h3>
-            </div>
-        </div>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/orders.css' %}">
+<style>
+    .orders-page {
+        padding: 4rem 0;
+        min-height: 80vh;
+        background: #fdf2f8;
+    }
 
-        <!-- Status Progress Bar -->
-        <div class="status-progress">
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: {{ order.get_status_progress }}%"></div>
-            </div>
-            <div class="status-steps">
-                <div
-                    class="status-step {% if order.status == 'PLACED' or order.status == 'CONFIRMED' or order.status == 'PACKED' or order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
-                    <div class="step-icon"><i class="fas fa-check"></i></div>
-                    <p>Placed</p>
-                </div>
-                <div
-                    class="status-step {% if order.status == 'CONFIRMED' or order.status == 'PACKED' or order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
-                    <div class="step-icon"><i class="fas fa-check"></i></div>
-                    <p>Confirmed</p>
-                </div>
-                <div
-                    class="status-step {% if order.status == 'PACKED' or order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
-                    <div class="step-icon"><i class="fas fa-box"></i></div>
-                    <p>Packed</p>
-                </div>
-                <div
-                    class="status-step {% if order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
-                    <div class="step-icon"><i class="fas fa-shipping-fast"></i></div>
-                    <p>Shipped</p>
-                </div>
-                <div
-                    class="status-step {% if order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
-                    <div class="step-icon"><i class="fas fa-truck"></i></div>
-                    <p>Out for Delivery</p>
-                </div>
-                <div class="status-step {% if order.status == 'DELIVERED' %}completed{% endif %}">
-                    <div class="step-icon"><i class="fas fa-home"></i></div>
-                    <p>Delivered</p>
-                </div>
-            </div>
-        </div>
+    .orders-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
 
-        <!-- Current Status Badge -->
-        <div class="order-status-section">
-            <div class="status-badge status-{{ order.status|lower }}">
-                <i class="fas fa-circle"></i>
-                {{ order.get_status_display }}
-            </div>
-            <p class="status-instruction">{{ order.get_status_instruction }}</p>
-            {% if order.status == 'CANCELLED' %}
-            <div style="border-top: 1px dashed #eee; padding-top: 0.4rem; margin-top: 0.4rem;">
-                {% if order.cancelled_by %}
-                <p class="text-danger" style="font-size: 0.85rem; font-weight: 500; margin-bottom: 0.2rem;">
-                    Cancelled by {{ order.get_cancelled_by_display }}
-                </p>
-                {% endif %}
-                {% if order.cancel_reason %}
-                <p style="color: #555; font-size: 0.85rem; margin-bottom: 0.2rem;">Reason: <strong>{{
-                        order.get_cancel_reason_display }}</strong></p>
-                {% endif %}
-                {% if order.cancellation_note %}
-                <p style="color: #777; font-size: 0.8rem; font-style: italic; margin-bottom: 0.2rem;">"{{
-                    order.cancellation_note|truncatechars:60 }}"</p>
-                {% endif %}
-            </div>
-            {% if order.refund %}
-            <p class="mt-1" style="font-size: 0.85rem; color: #2563eb; font-weight: 600;">
-                <i class="fas fa-undo"></i> Refund: {{ order.refund.get_status_display }}
-                {% if order.payment_method == 'ONLINE' %}
-                <span style="font-size: 0.75rem; color: #6b7280; font-weight: 400;">(Est. 5-7 days)</span>
-                {% endif %}
-            </p>
-            {% endif %}
-            {% endif %}
-        </div>
+    .orders-header i {
+        font-size: 3rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
 
-        <!-- Order Items Preview -->
-        <div class="order-items-preview">
-            <h4>Items ({{ order.items.count }})</h4>
-            <div class="items-grid">
-                {% for item in order.items.all|slice:":3" %}
-                <div class="item-preview">
-                    {% if item.product %}
-                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
-                    <p>{{ item.product.name }}</p>
-                    {% else %}
-                    <p>{{ item.quantity }}x Product</p>
+    .orders-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+    }
+
+    .orders-header .subtitle {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .empty-orders {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .empty-icon-wrapper {
+        width: 100px;
+        height: 100px;
+        background: #fff5f7;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+    }
+
+    .empty-icon-wrapper i {
+        font-size: 3rem;
+        color: var(--primary);
+    }
+
+    .empty-orders h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: var(--dark);
+    }
+
+    .btn-shop-now {
+        display: inline-block;
+        margin-top: 2rem;
+        padding: 1rem 3rem;
+        background: var(--primary);
+        color: white;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-shop-now:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(255, 51, 102, 0.2);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="orders-page">
+    <div class="container">
+        <header class="orders-header">
+            <i class="fas fa-box"></i>
+            <h1>My Orders</h1>
+            <p class="subtitle">Track and manage your orders</p>
+        </header>
+
+        {% if orders %}
+        <div class="orders-list">
+            {% for order in orders %}
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-info">
+                        <h3>Order #{{ order.order_id }}</h3>
+                        <p class="order-date">
+                            <i class="far fa-calendar"></i>
+                            {{ order.created_at|date:"d M, Y" }}
+                        </p>
+                    </div>
+                    <div class="order-amount">
+                        <p class="amount-label">Total Amount</p>
+                        <h3>₹{{ order.total_amount }}</h3>
+                    </div>
+                </div>
+
+                <!-- Status Progress Bar -->
+                <div class="status-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ order.get_status_progress }}%"></div>
+                    </div>
+                    <div class="status-steps">
+                        <div
+                            class="status-step {% if order.status == 'PLACED' or order.status == 'CONFIRMED' or order.status == 'PACKED' or order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
+                            <div class="step-icon"><i class="fas fa-check"></i></div>
+                            <p>Placed</p>
+                        </div>
+                        <div
+                            class="status-step {% if order.status == 'CONFIRMED' or order.status == 'PACKED' or order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
+                            <div class="step-icon"><i class="fas fa-check"></i></div>
+                            <p>Confirmed</p>
+                        </div>
+                        <div
+                            class="status-step {% if order.status == 'PACKED' or order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
+                            <div class="step-icon"><i class="fas fa-box"></i></div>
+                            <p>Packed</p>
+                        </div>
+                        <div
+                            class="status-step {% if order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
+                            <div class="step-icon"><i class="fas fa-shipping-fast"></i></div>
+                            <p>Shipped</p>
+                        </div>
+                        <div
+                            class="status-step {% if order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}">
+                            <div class="step-icon"><i class="fas fa-truck"></i></div>
+                            <p>Out for Delivery</p>
+                        </div>
+                        <div class="status-step {% if order.status == 'DELIVERED' %}completed{% endif %}">
+                            <div class="step-icon"><i class="fas fa-home"></i></div>
+                            <p>Delivered</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Status Badge -->
+                <div class="order-status-section">
+                    <div class="status-badge status-{{ order.status|lower }}">
+                        <i class="fas fa-circle"></i>
+                        {{ order.get_status_display }}
+                    </div>
+                    <p class="status-instruction">{{ order.get_status_instruction }}</p>
+                    {% if order.status == 'CANCELLED' %}
+                    <div style="border-top: 1px dashed #eee; padding-top: 0.4rem; margin-top: 0.4rem;">
+                        {% if order.cancelled_by %}
+                        <p class="text-danger" style="font-size: 0.85rem; font-weight: 500; margin-bottom: 0.2rem;">
+                            Cancelled by {{ order.get_cancelled_by_display }}
+                        </p>
+                        {% endif %}
+                        {% if order.cancel_reason %}
+                        <p style="color: #555; font-size: 0.85rem; margin-bottom: 0.2rem;">Reason: <strong>{{
+                                order.get_cancel_reason_display }}</strong></p>
+                        {% endif %}
+                        {% if order.cancellation_note %}
+                        <p style="color: #777; font-size: 0.8rem; font-style: italic; margin-bottom: 0.2rem;">"{{
+                            order.cancellation_note|truncatechars:60 }}"</p>
+                        {% endif %}
+                    </div>
+                    {% if order.refund %}
+                    <p class="mt-1" style="font-size: 0.85rem; color: #2563eb; font-weight: 600;">
+                        <i class="fas fa-undo"></i> Refund: {{ order.refund.get_status_display }}
+                        {% if order.payment_method == 'ONLINE' %}
+                        <span style="font-size: 0.75rem; color: #6b7280; font-weight: 400;">(Est. 5-7 days)</span>
+                        {% endif %}
+                    </p>
+                    {% endif %}
                     {% endif %}
                 </div>
-                {% endfor %}
-                {% if order.items.count > 3 %}
-                <div class="item-preview more-items">
-                    <p>+{{ order.items.count|add:"-3" }} more</p>
+
+                <!-- Order Items Preview -->
+                <div class="order-items-preview">
+                    <h4>Items ({{ order.items.count }})</h4>
+                    <div class="items-grid">
+                        {% for item in order.items.all|slice:":3" %}
+                        <div class="item-preview">
+                            {% if item.product %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                            <p>{{ item.product.name }}</p>
+                            {% else %}
+                            <p>{{ item.quantity }}x Product</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        {% if order.items.count > 3 %}
+                        <div class="item-preview more-items">
+                            <p>+{{ order.items.count|add:"-3" }} more</p>
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
-                {% endif %}
+
+                <!-- Order Actions -->
+                <div class="order-actions">
+                    <a href="{% url 'orders:order_detail' order.order_id %}" class="btn-outline">
+                        <i class="fas fa-eye"></i> View Details
+                    </a>
+
+                    {% with s=order.status|lower %}
+                    {% if s == 'placed' or s == 'confirmed' or s == 'paid' or s == 'processing' %}
+                    <button type="button" class="btn-danger"
+                        style="background: #fee2e2; color: #dc2626; border: 1px solid #dc2626;"
+                        onclick="openCancelModal('{% url 'orders:cancel_order' order.order_id %}')">
+                        <i class="fas fa-times"></i> Cancel Order
+                    </button>
+                    {% endif %}
+                    {% endwith %}
+
+                    {% if order.status == 'DELIVERED' %}
+                    <a href="{% url 'orders:rate_review' order.order_id %}" class="btn-primary">
+                        <i class="fas fa-star"></i> Rate & Review
+                    </a>
+                    {% endif %}
+                </div>
             </div>
+            {% endfor %}
         </div>
 
-        <!-- Order Actions -->
-        <div class="order-actions">
-            <a href="{% url 'orders:order_detail' order.order_id %}" class="btn-outline">
-                <i class="fas fa-eye"></i> View Details
-            </a>
-
-            {% with s=order.status|lower %}
-            {% if s == 'placed' or s == 'confirmed' or s == 'paid' or s == 'processing' %}
-            <button type="button" class="btn-danger"
-                style="background: #fee2e2; color: #dc2626; border: 1px solid #dc2626;"
-                onclick="openCancelModal('{% url 'orders:cancel_order' order.order_id %}')">
-                <i class="fas fa-times"></i> Cancel Order
-            </button>
-            {% endif %}
-            {% endwith %}
-
-            {% if order.status == 'DELIVERED' %}
-            <a href="{% url 'orders:rate_review' order.order_id %}" class="btn-primary">
-                <i class="fas fa-star"></i> Rate & Review
-            </a>
-            {% endif %}
+        <!-- Pagination if needed -->
+        <div class="pagination-section">
+            <p>Showing {{ orders.count }} order{{ orders.count|pluralize }}</p>
         </div>
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="empty-orders">
+            <div class="empty-icon-wrapper">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h2>No orders yet</h2>
+            <p>You haven't placed any orders yet. Explore our collection and find something you love!</p>
+            <a href="{% url 'products:product_list' %}" class="btn-shop-now">Explore Collection</a>
+        </div>
+        {% endif %}
     </div>
-    {% endfor %}
-</div>
-
-<!-- Pagination if needed -->
-<div class="pagination-section">
-    <p>Showing {{ orders.count }} order{{ orders.count|pluralize }}</p>
-</div>
-
-{% else %}
-<div class="empty-state">
-    <i class="fas fa-box-open"></i>
-    <h3>No Orders Yet</h3>
-    <p>You haven't placed any orders yet. Start shopping to see your orders here!</p>
-    <a href="{% url 'products:product_list' %}" class="cta-btn">
-        <i class="fas fa-shopping-bag"></i> Start Shopping
-    </a>
-</div>
-{% endif %}
+</main>
 
 <!-- Cancel Modal -->
 <div class="modal-overlay" id="cancelModal">
@@ -226,5 +313,4 @@
         }
     });
 </script>
-
 {% endblock %}

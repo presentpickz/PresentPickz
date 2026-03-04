@@ -321,3 +321,12 @@ def mock_payment(request, order_id):
     """Mock payment page for development"""
     order = get_object_or_404(Order, order_id=order_id)
     return render(request, 'orders/mock_pay.html', {'order': order})
+
+@login_required
+def download_invoice(request, order_id):
+    """
+    Render invoice for printing/download.
+    """
+    order = get_object_or_404(Order, order_id=order_id, user=request.user)
+    return render(request, 'orders/invoice.html', {'order': order})
+

@@ -11,6 +11,7 @@ urlpatterns = [
     # Order Management
     path('my-orders/', views.my_orders, name='my_orders'),
     path('order/<str:order_id>/', views.order_detail, name='order_detail'),
+    path('invoice/<str:order_id>/', views.download_invoice, name='download_invoice'),
     path('track/', views.track_order, name='track_order'),
     path('cancel/<str:order_id>/', views.cancel_order, name='cancel_order'),
     

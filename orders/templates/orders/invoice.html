@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice #{{ order.order_id }} - Present Pickz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            background: #fff;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ff3366;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #ff3366;
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: -1px;
+        }
+
+        .invoice-info h2 {
+            margin: 0;
+            color: #333;
+            font-size: 24px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            text-transform: uppercase;
+            font-size: 12px;
+            font-weight: 700;
+            color: #999;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .customer-info p,
+        .order-info p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+        }
+
+        th {
+            background: #fdf2f8;
+            color: #ff3366;
+            text-align: left;
+            padding: 12px;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .totals {
+            margin-left: auto;
+            width: 250px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 14px;
+        }
+
+        .total-row.grand-total {
+            border-top: 2px solid #333;
+            margin-top: 10px;
+            font-weight: 700;
+            font-size: 18px;
+            color: #ff3366;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #999;
+            font-size: 12px;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+
+            .invoice-box {
+                border: none;
+                box-shadow: none;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+
+        .no-print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #ff3366;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <button onclick="window.print()" class="no-print no-print-btn">
+        <i class="fas fa-print"></i> Print / Save as PDF
+    </button>
+
+    <div class="invoice-box">
+        <div class="header">
+            <div class="logo">
+                <h1>Present Pickz</h1>
+                <p style="font-size: 12px; color: #666; margin-top: 5px;">Exquisite Gifts, Timeless Memories</p>
+            </div>
+            <div class="invoice-info">
+                <h2>INVOICE</h2>
+                <p style="margin: 0; color: #666;">#{{ order.order_id }}</p>
+            </div>
+        </div>
+
+        <div class="details-grid">
+            <div class="customer-info">
+                <div class="section-title">Bill To</div>
+                <p><strong>{{ order.full_name }}</strong></p>
+                <p>{{ order.address }}</p>
+                <p>Phone: {{ order.mobile }}</p>
+                {% if order.email %}
+                <p>Email: {{ order.email }}</p>
+                {% endif %}
+            </div>
+            <div class="order-info">
+                <div class="section-title">Order Details</div>
+                <p><strong>Date:</strong> {{ order.created_at|date:"d M, Y" }}</p>
+                <p><strong>Status:</strong> {{ order.get_status_display }}</p>
+                <p><strong>Payment:</strong> {{ order.get_payment_method_display }}</p>
+                <p><strong>Pincode:</strong> {{ order.pincode }}</p>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                <tr>
+                    <td>
+                        <strong>{{ item.product.name }}</strong>
+                        {% if item.is_gift_wrapped %}
+                        <br><small style="color: #ff3366;">(Gift Wrapped)</small>
+                        {% endif %}
+                    </td>
+                    <td>₹{{ item.price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.get_cost }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="totals">
+            <div class="total-row">
+                <span>Subtotal</span>
+                <span>₹{{ order.get_subtotal }}</span>
+            </div>
+            <div class="total-row">
+                <span>Delivery</span>
+                <span>₹{{ order.delivery_charge }}</span>
+            </div>
+            {% if order.packing_charge > 0 %}
+            <div class="total-row">
+                <span>Packing</span>
+                <span>₹{{ order.packing_charge }}</span>
+            </div>
+            {% endif %}
+            <div class="total-row grand-total">
+                <span>Total Amount</span>
+                <span>₹{{ order.total_amount }}</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Thank you for choosing Present Pickz!</p>
+            <p>This is a computer generated invoice. No signature required.</p>
+            <p style="margin-top: 10px;">Contact us: support@presentpickz.com | +91 87789 92588</p>
+        </div>
+    </div>
+</body>
+
+</html>
