@@ -236,9 +236,9 @@
             <a href="{% url 'products:product_detail' product.id %}" style="text-decoration: none; color: inherit;">
                 <div class="product-image-container">
                     <img src="{{ product.get_image_url }}" alt="{{ product.name }}" class="product-image" loading="lazy"
-                        {% if product.stock <=0 %}style="filter: grayscale(80%); opacity: 0.7;" {% endif %}>
+                        {% if product.stock < 1 %}style="filter: grayscale(80%); opacity: 0.7;" {% endif %}>
 
-                    {% if product.stock <= 0 %} <span class="badge" style="background: #333; color: white;">SOLD
+                    {% if product.stock < 1 %} <span class="badge" style="background: #333; color: white;">SOLD
                         OUT</span>
                         {% elif product.badge %}
                         <span class="badge hot">{{ product.badge }}</span>
