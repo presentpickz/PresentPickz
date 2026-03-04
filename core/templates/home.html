@@ -198,17 +198,17 @@
                 <div>
                     <h4 style="color: white; margin-bottom: 24px;">Shop</h4>
                     <ul style="color: #888; display: flex; flex-direction: column; gap: 12px;">
-                        <li><a href="#">New Arrivals</a></li>
-                        <li><a href="#">Pre-orders</a></li>
-                        <li><a href="#">Sale</a></li>
+                        <li><a href="{% url 'product_list' %}">New Arrivals</a></li>
+                        <li><a href="{% url 'product_list' %}">Pre-orders</a></li>
+                        <li><a href="{% url 'product_list' %}">Sale</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 style="color: white; margin-bottom: 24px;">Support</h4>
                     <ul style="color: #888; display: flex; flex-direction: column; gap: 12px;">
-                        <li><a href="#">Track Order</a></li>
-                        <li><a href="#">Shipping Policy</a></li>
-                        <li><a href="#">Returns</a></li>
+                        <li><a href="{% url 'track_order' %}">Track Order</a></li>
+                        <li><a href="{% url 'shipping_policy' %}">Shipping Policy</a></li>
+                        <li><a href="{% url 'return_policy' %}">Returns</a></li>
                     </ul>
                 </div>
             </div>

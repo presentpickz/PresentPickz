@@ -56,12 +56,19 @@ class UserEditForm(forms.ModelForm):
     """Form for editing user profile information"""
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email']
+        fields = ['username', 'first_name', 'last_name', 'email']
         widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
         }
+    
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.exclude(pk=self.instance.pk).filter(username=username).exists():
+            raise forms.ValidationError("A user with that username already exists.")
+        return username
 
 
 class ProfilePhotoForm(forms.ModelForm):
