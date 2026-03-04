@@ -236,8 +236,7 @@
 
         <!-- Info -->
         <div class="product-info-col">
-            <div class="stock-status" {% if product.stock < 1 %}style="background: #fee2e2; color: #991b1b;" {% endif
-                %}>
+            <div class="stock-status" {% if product.stock < 1 %}style="background: #fee2e2; color: #991b1b;"{% endif %}>
                 {% if product.stock > 0 %}
                 In Stock
                 {% else %}
