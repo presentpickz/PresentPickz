@@ -14,11 +14,11 @@ def calculate_checkout_total(cart_total, pincode, gift_wrap=False):
         if charge_obj:
             delivery_charge = float(charge_obj.charge)
         else:
-            # Default logic: Free delivery for orders above 999, else 50
-            delivery_charge = 0.0 if float(cart_total) >= 999 else 50.0
+            # Default logic
+            delivery_charge = 0.0
     else:
-        # No pincode provided yet (should not happen in place_order but might in previews)
-        delivery_charge = 0.0 if float(cart_total) >= 999 else 50.0
+        # No pincode provided yet
+        delivery_charge = 0.0
     
     # Gift wrap charge (Set to 100 as per checkout page)
     packing_charge = 100.0 if gift_wrap else 0.0

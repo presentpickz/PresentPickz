@@ -157,7 +157,7 @@
                 </div>
                 <div class="d-flex justify-content-between mb-2">
                     <span>Delivery Charge</span>
-                    <span>₹<span id="summary-delivery">{% if total >= 999 %}0{% else %}50{% endif %}</span></span>
+                    <span>₹<span id="summary-delivery">0</span></span>
                 </div>
                 <hr>
                 <div class="d-flex justify-content-between font-weight-bold"
@@ -201,7 +201,7 @@
                 const mainTotalSpan = document.querySelector('.checkout-form h2 + div span'); // Total at top
 
                 // Initial Delivery Logic (match server fallback)
-                let deliveryCharge = subtotal >= 999 ? 0 : 50;
+                let deliveryCharge = 0;
 
                 function updateTotals() {
                     const isGift = giftCheckbox.checked;
@@ -213,6 +213,7 @@
 
                     // Update spans
                     packingSpan.textContent = packingCharge;
+                    deliverySpan.textContent = deliveryCharge;
 
                     const grandTotal = subtotal + deliveryCharge + packingCharge;
                     totalSpan.textContent = grandTotal.toFixed(2);
@@ -223,12 +224,24 @@
 
                 giftCheckbox.addEventListener('change', updateTotals);
 
-                // Pincode logic (optional placeholder for AJAX)
+                // Pincode logic
                 const pincodeInput = document.getElementById('pincode');
-                pincodeInput.addEventListener('change', function () {
-                    // In a real app, call API to check delivery charge for this pincode
-                    // For now, we stick to standard logic
-                });
+                if (pincodeInput) {
+                    pincodeInput.addEventListener('input', function () {
+                        const pincode = this.value;
+                        if (pincode.length >= 6) {
+                            fetch(`/orders/check-pincode/?pincode=${pincode}&cart_total=${subtotal}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.delivery_charge !== undefined) {
+                                        deliveryCharge = parseFloat(data.delivery_charge);
+                                        updateTotals();
+                                    }
+                                })
+                                .catch(error => console.error('Error fetching pincode delivery charge:', error));
+                        }
+                    });
+                }
 
                 // Run once
                 updateTotals();

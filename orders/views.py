@@ -270,6 +270,25 @@ def cancel_order(request, order_id):
     messages.success(request, msg)
     return redirect('orders:my_orders')
 
+from django.http import JsonResponse
+
+def check_pincode(request):
+    """API endpoint to check delivery charge for a pincode"""
+    pincode = request.GET.get('pincode', '')
+    cart_total = request.GET.get('cart_total', 0)
+    
+    try:
+        cart_total = float(cart_total)
+    except ValueError:
+        cart_total = 0.0
+
+    from .utils import calculate_checkout_total
+    totals = calculate_checkout_total(cart_total, pincode, gift_wrap=False)
+    
+    return JsonResponse({
+        'delivery_charge': totals['delivery_charge']
+    })
+
 @login_required
 def rate_review(request, order_id):
     """Page to list items in order for review"""

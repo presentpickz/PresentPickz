@@ -40,13 +40,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(response => response.json())
                 .then(data => {
                     // Update button state
+                    const icon = this.querySelector('i');
                     if (data.added) {
                         this.classList.add('active');
                         this.setAttribute('aria-label', 'Remove from wishlist');
+                        if (icon) {
+                            icon.classList.remove('far');
+                            icon.classList.add('fas');
+                        }
                         showToast('Added to wishlist ❤️');
                     } else {
                         this.classList.remove('active');
                         this.setAttribute('aria-label', 'Add to wishlist');
+                        if (icon) {
+                            icon.classList.remove('fas');
+                            icon.classList.add('far');
+                        }
                         showToast('Removed from wishlist');
                     }
 

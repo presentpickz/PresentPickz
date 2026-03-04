@@ -14,6 +14,7 @@ urlpatterns = [
     path('invoice/<str:order_id>/', views.download_invoice, name='download_invoice'),
     path('track/', views.track_order, name='track_order'),
     path('cancel/<str:order_id>/', views.cancel_order, name='cancel_order'),
+    path('check-pincode/', views.check_pincode, name='check_pincode'),
     
     # Reviews
     path('review/<str:order_id>/', views.rate_review, name='rate_review'),
