@@ -35,7 +35,11 @@ def place_order(request):
     
     # Check final stock before creating order
     for product_id, item_data in cart.items():
-        product = Product.objects.get(id=product_id)
+        product = Product.objects.filter(id=product_id).first()
+        if not product:
+            messages.error(request, "One of the products in your cart is no longer available.")
+            return redirect('cart:cart')
+            
         if product.stock < item_data['quantity']:
             messages.error(request, f"Sorry, {product.name} just went out of stock or quantity exceeds availability.")
             return redirect('cart:cart')
@@ -66,7 +70,10 @@ def place_order(request):
 
     # Create Items
     for product_id, item_data in cart.items():
-        product = Product.objects.get(id=product_id)
+        product = Product.objects.filter(id=product_id).first()
+        if not product:
+            continue # Should have been caught above, but safety first
+            
         OrderItem.objects.create(
             order=order,
             product=product,
