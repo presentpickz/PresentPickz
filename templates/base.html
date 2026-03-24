@@ -117,8 +117,9 @@
                 {% if user.is_authenticated %}
                 <div class="user-menu desktop-only pointer">
                     <div class="user-greeting pointer">
-                        {% if user.is_authenticated and user.profile and user.profile.profile_photo %}
-                        <img src="{{ user.profile.profile_photo.url }}" alt="{{ user.username }}"
+                        {% with profile_url=user.profile.get_photo_url %}
+                        {% if user.is_authenticated and user.profile and profile_url %}
+                        <img src="{{ profile_url }}" alt="{{ user.username }}"
                             class="nav-profile-photo">
                         {% else %}
                         <div class="nav-avatar-initials">

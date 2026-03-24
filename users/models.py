@@ -87,6 +87,15 @@ class UserProfile(models.Model):
             return self.user.first_name[0].upper()
         return self.user.username[0].upper()
 
+    def get_photo_url(self):
+        """Safe profile photo URL retriever"""
+        try:
+            if self.profile_photo and self.profile_photo.name:
+                return self.profile_photo.url
+        except Exception:
+            pass
+        return None
+
 import secrets
 from django.utils import timezone
 from datetime import timedelta

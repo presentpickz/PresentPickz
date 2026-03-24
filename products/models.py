@@ -77,6 +77,15 @@ class ProductImage(models.Model):
     def __str__(self):
         return f"Image for {self.product.name}"
 
+    def get_image_url(self):
+        """Safe gallery image URL retriever"""
+        try:
+            if self.image and self.image.name:
+                return self.image.url
+        except Exception:
+            pass
+        return '/static/images/product_placeholder.png'
+
 
 class Review(models.Model):
     """
