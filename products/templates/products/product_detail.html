@@ -228,8 +228,10 @@
             <div class="thumbnails">
                 <img src="{{ product.get_image_url }}" class="thumb active" onclick="changeImage(this)">
                 {% for gallery_img in product.gallery_images.all %}
+                {% if gallery_img.image %}
                 <img src="{{ gallery_img.image.url }}" class="thumb" onclick="changeImage(this)"
                     alt="{{ gallery_img.alt_text|default:product.name }}">
+                {% endif %}
                 {% endfor %}
             </div>
         </div>

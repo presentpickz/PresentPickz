@@ -4,6 +4,7 @@ from django.contrib import messages
 from .models import Order, OrderItem
 from products.models import Product
 from .cashfree_client import CashfreeClient
+from django.db.models import Q
 import uuid
 
 def place_order(request):
