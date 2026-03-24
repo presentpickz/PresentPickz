@@ -126,6 +126,7 @@
                             {{ user.first_name|slice:":1"|default:user.username|slice:":1"|upper }}
                         </div>
                         {% endif %}
+                        {% endwith %}
                         <span>Hi, {{ user.first_name|default:user.username }}</span>
                         <i class="fas fa-chevron-down ml-1" style="font-size: 0.8em;"></i>
                     </div>

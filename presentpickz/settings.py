@@ -120,7 +120,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'presentpickz.middleware.RoleBasedAccessMiddleware',  # STRICT AUTH SEPARATION
-    # 'presentpickz.splash_middleware.SplashScreenMiddleware',  # Creative splash on all pages
+    'presentpickz.splash_middleware.SplashScreenMiddleware',  # Creative splash on all pages
 ]
 
 ROOT_URLCONF = 'presentpickz.urls'
