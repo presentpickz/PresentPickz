@@ -12,8 +12,9 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost 127.0.0.1 .railway.app .up.railway.app').split()
 # Add your Namecheap domain here or in Railway Variables
-if os.getenv('CUSTOM_DOMAIN'):
-    ALLOWED_HOSTS.append(os.getenv('CUSTOM_DOMAIN'))
+custom_domain = os.getenv('CUSTOM_DOMAIN')
+if custom_domain:
+    ALLOWED_HOSTS.append(custom_domain)
 
 # CSRF Protection - Trust your domains for form submissions (login, logout, checkout, etc.)
 CSRF_TRUSTED_ORIGINS = [
@@ -119,7 +120,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'presentpickz.middleware.RoleBasedAccessMiddleware',  # STRICT AUTH SEPARATION
-    'presentpickz.splash_middleware.SplashScreenMiddleware',  # Creative splash on all pages
+    # 'presentpickz.splash_middleware.SplashScreenMiddleware',  # Creative splash on all pages
 ]
 
 ROOT_URLCONF = 'presentpickz.urls'
