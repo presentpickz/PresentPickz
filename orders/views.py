@@ -280,8 +280,10 @@ def cancel_order(request, order_id):
     
     # Send Email
     try:
+        import threading
         from .utils import send_order_cancel_email
-        send_order_cancel_email(order)
+        email_thread = threading.Thread(target=send_order_cancel_email, args=(order,))
+        email_thread.start()
     except Exception as e:
         print(f"Email failed: {e}")
 

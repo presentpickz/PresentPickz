@@ -162,12 +162,10 @@
                         </p>
                         {% endif %}
                         {% if order.cancel_reason %}
-                        <p style="color: #555; font-size: 0.85rem; margin-bottom: 0.2rem;">Reason: <strong>{{
-                                order.get_cancel_reason_display }}</strong></p>
+                        <p style="color: #555; font-size: 0.85rem; margin-bottom: 0.2rem;">Reason: <strong>{{ order.get_cancel_reason_display }}</strong></p>
                         {% endif %}
                         {% if order.cancellation_note %}
-                        <p style="color: #777; font-size: 0.8rem; font-style: italic; margin-bottom: 0.2rem;">"{{
-                            order.cancellation_note|truncatechars:60 }}"</p>
+                        <p style="color: #777; font-size: 0.8rem; font-style: italic; margin-bottom: 0.2rem;">"{{ order.cancellation_note|truncatechars:60 }}"</p>
                         {% endif %}
                     </div>
                     {% if order.refund %}
