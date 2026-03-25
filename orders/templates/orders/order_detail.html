@@ -159,16 +159,13 @@
                     <div
                         style="width: 100%; margin-top: 0.5rem; padding-left: 2rem; border-top: 1px dashed #e5e7eb; padding-top: 0.5rem;">
                         {% if order.cancelled_by %}
-                        <p style="color:#dc3545; font-weight: 600; font-size: 0.9rem;">Cancelled by {{
-                            order.get_cancelled_by_display }}</p>
+                        <p style="color:#dc3545; font-weight: 600; font-size: 0.9rem;">Cancelled by {{ order.get_cancelled_by_display }}</p>
                         {% endif %}
                         {% if order.cancel_reason %}
-                        <p style="color: #374151; font-size: 0.9rem;">Reason: <strong>{{ order.get_cancel_reason_display
-                                }}</strong></p>
+                        <p style="color: #374151; font-size: 0.9rem;">Reason: <strong>{{ order.get_cancel_reason_display }}</strong></p>
                         {% endif %}
                         {% if order.cancellation_note %}
-                        <p style="color: #6b7280; font-size: 0.9rem; font-style: italic; margin-top: 0.2rem;">"{{
-                            order.cancellation_note }}"</p>
+                        <p style="color: #6b7280; font-size: 0.9rem; font-style: italic; margin-top: 0.2rem;">"{{ order.cancellation_note }}"</p>
                         {% endif %}
                     </div>
                     {% endif %}
