@@ -261,7 +261,15 @@
                 {% endif %}
             </div>
 
+            {% if product.description_points %}
+            <ul class="description" style="list-style-type: disc; padding-left: 20px; text-align: left;">
+                {% for point in product.description_points %}
+                <li>{{ point }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
             <p class="description">{{ product.description }}</p>
+            {% endif %}
 
             <form action="{% url 'cart:add_to_cart' product.id %}" method="POST">
                 {% csrf_token %}

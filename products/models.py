@@ -35,6 +35,13 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def description_points(self):
+        """Returns description as a list of non-empty lines, useful for bullet points."""
+        if self.description:
+            return [line.strip() for line in self.description.split('\n') if line.strip()]
+        return []
+
     def get_image_url(self):
         """Return image URL or placeholder"""
         try:

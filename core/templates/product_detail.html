@@ -136,9 +136,17 @@
                         {% endif %}
                     </div>
 
+                    {% if product.description_points %}
+                    <ul style="color: var(--color-text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 32px; list-style-type: disc; padding-left: 20px;">
+                        {% for point in product.description_points %}
+                        <li>{{ point }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
                     <p style="color: var(--color-text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 32px;">
                         {{ product.description }}
                     </p>
+                    {% endif %}
 
                     <!-- Add to Cart Action -->
                     <div style="display: flex; gap: 16px; margin-bottom: 40px;">
