@@ -363,6 +363,7 @@ ul {
 .footer-btn:hover {
     background: var(--primary-dark);
     transform: translateY(-2px);
+    color: white !important;
 }
 
 .social-icons a {
@@ -382,6 +383,7 @@ ul {
     background: var(--primary);
     border-color: var(--primary);
     transform: translateY(-3px);
+    color: white !important;
 }
 
 .footer-bottom {

@@ -261,6 +261,7 @@ img {
 .cta-btn:hover {
     transform: translateY(-3px);
     box-shadow: var(--btn-shadow-hover);
+    color: white !important;
 }
 
 .btn-primary:active,

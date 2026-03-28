@@ -264,6 +264,16 @@
         background: linear-gradient(90deg, var(--dark) 0%, transparent 50%);
     }
 
+    .featured-btn {
+        background: #f8eff0 !important;
+        color: var(--dark) !important;
+    }
+
+    .featured-btn:hover {
+        background: var(--primary) !important;
+        color: white !important;
+    }
+
     @media (max-width: 768px) {
 
         /* Hero Mobile Responsiveness */
@@ -569,8 +579,7 @@
                 <h2 style="font-size: 3rem; color: white; margin: 1rem 0;">The Anime Collection</h2>
                 <p style="color: #aaa; margin-bottom: 2rem;">Detailed craftsmanship meets iconic design. Discover our
                     premium range of imported figures.</p>
-                <a href="{% url 'products:product_list' %}?category=anime" class="cta-btn"
-                    style="background: #f8eff0; color: var(--dark);">Explore Collection</a>
+                <a href="{% url 'products:product_list' %}?category=anime" class="cta-btn featured-btn">Explore Collection</a>
             </div>
             <div class="featured-image-container">
                 <img src="{% static 'images/asuka_figure.jpg' %}" alt="Anime Collection"

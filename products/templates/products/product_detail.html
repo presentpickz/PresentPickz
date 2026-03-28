@@ -221,16 +221,61 @@
     <div class="detail-grid">
         <!-- Gallery -->
         <div class="gallery-container">
-            <div class="main-image-frame" id="mainImageContainer">
-                <img src="{{ product.get_image_url }}" alt="{{ product.name }}" class="main-image" id="mainImage"
-                    decoding="async">
+            <div class="carousel-wrapper" id="imageCarousel" style="position: relative; width: 100%; aspect-ratio: 1; border-radius: var(--radius-md); overflow: hidden; background: #f8f9fa; box-shadow: var(--shadow-md);">
+                <div class="carousel-inner" id="carouselInner" style="display: flex; height: 100%; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: grab;">
+                    <!-- Main Product Image -->
+                    <div class="carousel-item" style="min-width: 100%; height: 100%;">
+                        <img src="{{ product.get_image_url }}" style="width: 100%; height: 100%; object-fit: cover;" alt="{{ product.name }}" decoding="async">
+                    </div>
+                    <!-- Additional Gallery Images -->
+                    {% for gallery_img in product.gallery_images.all %}
+                    {% if gallery_img.image %}
+                    <div class="carousel-item" style="min-width: 100%; height: 100%;">
+                        <img src="{{ gallery_img.get_image_url }}" style="width: 100%; height: 100%; object-fit: cover;" alt="{{ gallery_img.alt_text|default:product.name }}">
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                
+                <!-- Navigation Arrows -->
+                <button aria-label="Previous image" class="carousel-arrow prev-arrow" onclick="prevSlide()" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); background: white; border: 1px solid var(--border-soft); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; box-shadow: var(--shadow-sm); z-index: 2; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--dark); transition: 0.2s;"><i class="fas fa-chevron-left"></i></button>
+                <button aria-label="Next image" class="carousel-arrow next-arrow" onclick="nextSlide()" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: white; border: 1px solid var(--border-soft); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; box-shadow: var(--shadow-sm); z-index: 2; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--dark); transition: 0.2s;"><i class="fas fa-chevron-right"></i></button>
+                
+                <!-- Interactive Overlay Buttons -->
+                <div style="position: absolute; bottom: 16px; right: 16px; display: flex; gap: 12px; z-index: 10;">
+                    <!-- Share Button (Web Share API) -->
+                    <button onclick="shareProduct()" aria-label="Share" title="Share Product" style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 255, 255, 0.9); border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.1); color: var(--dark); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.2s;">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                    <!-- Wishlist Button -->
+                    <button class="wishlist-btn" data-product-id="{{ product.id }}" aria-label="Add to wishlist" title="Add to Wishlist" style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 255, 255, 0.9); border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.2s;">
+                        <i class="far fa-heart"></i>
+                    </button>
+                </div>
             </div>
-            <div class="thumbnails">
-                <img src="{{ product.get_image_url }}" class="thumb active" onclick="changeImage(this)">
+            
+            <script>
+                function shareProduct() {
+                    if (navigator.share) {
+                        navigator.share({
+                            title: '{{ product.name|escapejs }}',
+                            text: 'Check out this awesome product at Present Pickz!',
+                            url: window.location.href,
+                        }).catch((error) => console.log('Error sharing', error));
+                    } else {
+                        // Fallback
+                        navigator.clipboard.writeText(window.location.href);
+                        alert('Product link copied to clipboard!');
+                    }
+                }
+            </script>
+            
+            <!-- Dots Indicators -->
+            <div class="carousel-dots" id="carouselDots" style="display: flex; justify-content: center; gap: 8px; margin-top: 16px;">
+                <div class="dot active" onclick="goToSlide(0)" style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary); cursor: pointer; transition: all 0.3s; transform: scale(1.2);"></div>
                 {% for gallery_img in product.gallery_images.all %}
                 {% if gallery_img.image %}
-                <img src="{{ gallery_img.get_image_url }}" class="thumb" onclick="changeImage(this)"
-                    alt="{{ gallery_img.alt_text|default:product.name }}">
+                <div class="dot" onclick="goToSlide({{ forloop.counter }})" style="width: 8px; height: 8px; border-radius: 50%; background: var(--border-soft); cursor: pointer; transition: all 0.3s; transform: scale(1);"></div>
                 {% endif %}
                 {% endfor %}
             </div>
@@ -262,11 +307,39 @@
             </div>
 
             {% if product.description_points %}
-            <ul class="description" style="list-style-type: disc; padding-left: 20px; text-align: left;">
+            <div class="description" style="text-align: left;">
                 {% for point in product.description_points %}
-                <li>{{ point }}</li>
+                    {% if forloop.counter <= 2 %}
+                    <p style="margin-bottom: 12px;">{{ point }}</p>
+                    {% endif %}
                 {% endfor %}
-            </ul>
+                
+                {% if product.description_points|length > 2 %}
+                <div id="more-description" style="display: none;">
+                    {% for point in product.description_points %}
+                        {% if forloop.counter > 2 %}
+                        <p style="margin-bottom: 12px;">{{ point }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <button type="button" id="see-more-btn" onclick="toggleDescription()" style="background: none; border: none; color: var(--primary); font-weight: 600; cursor: pointer; padding: 0; font-size: 15px; text-decoration: underline; margin-top: 8px;">See more</button>
+                
+                <script>
+                    function toggleDescription() {
+                        var moreText = document.getElementById("more-description");
+                        var btnText = document.getElementById("see-more-btn");
+                
+                        if (moreText.style.display === "none") {
+                            moreText.style.display = "block";
+                            btnText.innerHTML = "See less";
+                        } else {
+                            moreText.style.display = "none";
+                            btnText.innerHTML = "See more";
+                        }
+                    }
+                </script>
+                {% endif %}
+            </div>
             {% else %}
             <p class="description">{{ product.description }}</p>
             {% endif %}
@@ -303,19 +376,21 @@
                     </button>
                 </div>
 
-                <div class="trust-badges mt-4"
-                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1.5rem; background: #fdf2f8; border-radius: 12px;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 500;">
-                        <i class="fas fa-truck-fast" style="color: var(--primary);"></i> Free Delivery
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 500;">
-                        <i class="fas fa-shield-halved" style="color: var(--primary);"></i> Secure Payment
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 500;">
-                        <i class="fas fa-rotate-left" style="color: var(--primary);"></i> 7-Day Returns
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 500;">
-                        <i class="fas fa-gift" style="color: var(--primary);"></i> Gift Ready
+                <div class="trust-badges mt-4" style="padding: 1.5rem; background: #fdf2f8; border-radius: 12px;">
+                    <h5 style="margin-bottom: 1rem; font-weight: 700; color: var(--dark); font-size: 1.1rem; text-align: left;">Why Shop With Us</h5>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 500;">
+                            <i class="fas fa-truck-fast" style="color: var(--primary);"></i> Free Delivery
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 500;">
+                            <i class="fas fa-shield-halved" style="color: var(--primary);"></i> Secure Payment
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 500;">
+                            <i class="fas fa-rotate-left" style="color: var(--primary);"></i> 7-Day Returns
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 500;">
+                            <i class="fas fa-gift" style="color: var(--primary);"></i> Gift Ready
+                        </div>
                     </div>
                 </div>
 
@@ -438,22 +513,76 @@
 
 {% block extra_js %}
 <script>
-    function changeImage(thumb) {
-        document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
-        thumb.classList.add('active');
-        document.getElementById('mainImage').src = thumb.src;
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-item');
+    const dots = document.querySelectorAll('.dot');
+    const inner = document.getElementById('carouselInner');
+    const totalSlides = slides.length;
+
+    function updateCarousel() {
+        inner.style.transform = `translateX(-${currentSlide * 100}%)`;
+        dots.forEach((dot, index) => {
+            if (index === currentSlide) {
+                dot.style.background = 'var(--primary)';
+                dot.style.transform = 'scale(1.2)';
+            } else {
+                dot.style.background = 'var(--border-soft)';
+                dot.style.transform = 'scale(1)';
+            }
+        });
     }
 
-    // Zoom effect
-    const container = document.getElementById('mainImageContainer');
-    const img = document.getElementById('mainImage');
+    function nextSlide() {
+        if (currentSlide < totalSlides - 1) {
+            currentSlide++;
+            updateCarousel();
+        }
+    }
 
-    container.addEventListener('mousemove', (e) => {
-        const { left, top, width, height } = container.getBoundingClientRect();
-        const x = (e.clientX - left) / width * 100;
-        const y = (e.clientY - top) / height * 100;
+    function prevSlide() {
+        if (currentSlide > 0) {
+            currentSlide--;
+            updateCarousel();
+        }
+    }
 
-        img.style.transformOrigin = `${x}% ${y}%`;
+    function goToSlide(index) {
+        currentSlide = index;
+        updateCarousel();
+    }
+
+    // Touch Swipe Logic
+    let startX = 0;
+    let endX = 0;
+    const carouselWrapper = document.getElementById('imageCarousel');
+
+    carouselWrapper.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+    }, {passive: true});
+
+    carouselWrapper.addEventListener('touchmove', (e) => {
+        endX = e.touches[0].clientX;
+    }, {passive: true});
+
+    carouselWrapper.addEventListener('touchend', () => {
+        if (startX > endX + 40) {
+            // Swipe Left -> Next
+            nextSlide();
+        } else if (startX < endX - 40) {
+            // Swipe Right -> Prev
+            prevSlide();
+        }
     });
+
+    // Hide arrows and dots if only 1 slide
+    if (totalSlides <= 1) {
+        const prevBtn = document.querySelector('.prev-arrow');
+        const nextBtn = document.querySelector('.next-arrow');
+        const dotsContainer = document.getElementById('carouselDots');
+        
+        if (prevBtn) prevBtn.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+        if (dotsContainer) dotsContainer.style.display = 'none';
+    }
 </script>
 {% endblock %}

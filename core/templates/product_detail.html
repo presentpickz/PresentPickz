@@ -137,11 +137,39 @@
                     </div>
 
                     {% if product.description_points %}
-                    <ul style="color: var(--color-text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 32px; list-style-type: disc; padding-left: 20px;">
+                    <div style="color: var(--color-text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 32px; text-align: left;">
                         {% for point in product.description_points %}
-                        <li>{{ point }}</li>
+                            {% if forloop.counter <= 2 %}
+                            <p style="margin-bottom: 12px;">{{ point }}</p>
+                            {% endif %}
                         {% endfor %}
-                    </ul>
+
+                        {% if product.description_points|length > 2 %}
+                        <div id="core-more-description" style="display: none;">
+                            {% for point in product.description_points %}
+                                {% if forloop.counter > 2 %}
+                                <p style="margin-bottom: 12px;">{{ point }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <button id="core-see-more-btn" onclick="toggleCoreDescription()" style="background: none; border: none; color: var(--color-brand-primary); font-weight: 600; cursor: pointer; padding: 0; font-size: 15px; text-decoration: underline; margin-top: 8px;">See more</button>
+                        
+                        <script>
+                            function toggleCoreDescription() {
+                                var moreText = document.getElementById("core-more-description");
+                                var btnText = document.getElementById("core-see-more-btn");
+                        
+                                if (moreText.style.display === "none") {
+                                    moreText.style.display = "block";
+                                    btnText.innerHTML = "See less";
+                                } else {
+                                    moreText.style.display = "none";
+                                    btnText.innerHTML = "See more";
+                                }
+                            }
+                        </script>
+                        {% endif %}
+                    </div>
                     {% else %}
                     <p style="color: var(--color-text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 32px;">
                         {{ product.description }}

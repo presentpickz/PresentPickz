@@ -133,6 +133,7 @@ ul {
 .btn-primary:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 32px rgba(159, 92, 102, 0.45);
+    color: white !important;
 }
 
 .btn-outline {
