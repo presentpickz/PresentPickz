@@ -207,7 +207,7 @@ ul {
 }
 
 .logo-highlight {
-    color: var(--primary);
+    color: #cfa0a8;
 }
 
 .search-bar {
@@ -302,7 +302,7 @@ ul {
 
 .footer-links h4,
 .footer-contact h4 {
-    color: var(--primary-dark);
+    color: #cfa0a8; /* Matching user specified hex for brand consistency */
     margin-bottom: 1.5rem;
     font-size: 1.1rem;
     text-transform: uppercase;

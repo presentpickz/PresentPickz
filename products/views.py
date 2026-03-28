@@ -36,10 +36,18 @@ def product_list(request):
         if category_slug:
             products = products.filter(category__slug=category_slug)
 
+        # Handle wishlist status
+        wishlisted_ids = []
+        if request.user.is_authenticated:
+            from users.models import Wishlist
+            wishlist, _ = Wishlist.objects.get_or_create(user=request.user)
+            wishlisted_ids = list(wishlist.products.values_list('id', flat=True))
+
         context = {
             'products': products,
             'categories': categories,
             'current_category': category_slug,
+            'wishlisted_ids': wishlisted_ids,
         }
         return render(request, 'products/product_list.html', context)
     except Exception as e:
@@ -57,10 +65,18 @@ def product_detail(request, product_id):
     # Get reviews
     reviews = product.reviews.filter(is_hidden=False)
     
+    # Check if in wishlist
+    is_in_wishlist = False
+    if request.user.is_authenticated:
+        from users.models import Wishlist
+        wishlist, created = Wishlist.objects.get_or_create(user=request.user)
+        is_in_wishlist = wishlist.products.filter(id=product.id).exists()
+    
     context = {
         'product': product,
         'related_products': related_products,
         'reviews': reviews,
+        'is_in_wishlist': is_in_wishlist,
     }
     return render(request, 'products/product_detail.html', context)
 
@@ -109,9 +125,17 @@ def product_search(request):
             Q(description__icontains=query)
         )
     
+    # Handle wishlist status
+    wishlisted_ids = []
+    if request.user.is_authenticated:
+        from users.models import Wishlist
+        wishlist, _ = Wishlist.objects.get_or_create(user=request.user)
+        wishlisted_ids = list(wishlist.products.values_list('id', flat=True))
+
     context = {
         'products': products,
         'categories': categories,
         'search_query': query,
+        'wishlisted_ids': wishlisted_ids,
     }
     return render(request, 'products/product_list.html', context)

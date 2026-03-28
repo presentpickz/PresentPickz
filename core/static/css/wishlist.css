@@ -227,9 +227,30 @@
 
 /* Responsive Overrides */
 @media (max-width: 768px) {
+    .wishlist-page {
+        padding: 40px 0;
+    }
+
+    .wishlist-header {
+        margin-bottom: 30px;
+    }
+
+    .wishlist-header i {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .wishlist-header h1 {
+        font-size: 2rem;
+    }
+
+    .wishlist-header p {
+        font-size: 0.95rem;
+    }
+
     .wishlist-grid {
         grid-template-columns: 1fr 1fr;
-        gap: 1rem;
+        gap: 0.75rem;
         padding: 0 0.5rem;
     }
 
@@ -238,12 +259,13 @@
     }
 
     .wishlist-card-content {
-        padding: 1rem;
+        padding: 0.85rem;
     }
 
     .wishlist-card-content h3 {
-        font-size: 0.95rem;
-        height: 2.6rem;
+        font-size: 0.85rem;
+        margin-bottom: 0.25rem;
+        height: 2.2rem;
         overflow: hidden;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -252,8 +274,8 @@
     }
 
     .wishlist-card-content p {
-        font-size: 1rem;
-        margin-bottom: 1rem;
+        font-size: 0.95rem;
+        margin-bottom: 0.75rem;
     }
 
     .wishlist-actions {
@@ -262,20 +284,33 @@
     }
 
     .btn-add-cart {
-        padding: 0.6rem;
-        font-size: 0.8rem;
+        padding: 0.5rem;
+        font-size: 0.75rem;
+        border-radius: 8px;
     }
 
     .btn-remove {
         position: absolute;
-        top: 8px;
-        right: 8px;
-        width: 32px;
-        height: 32px;
+        top: 6px;
+        right: 6px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(4px);
         border: none;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .wishlist-grid {
+        grid-template-columns: 1fr 1fr; /* Maintain 2 columns but be very tight */
+        gap: 0.5rem;
+    }
+    
+    .wishlist-header h1 {
+        font-size: 1.8rem;
     }
 }

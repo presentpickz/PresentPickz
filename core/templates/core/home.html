@@ -350,6 +350,28 @@
         .section-title {
             font-size: 1.8rem;
         }
+
+        .category-grid {
+            gap: 1rem;
+        }
+
+        .category-card {
+            height: 300px; /* Shorter cards on mobile */
+        }
+
+        .category-content {
+            padding: 1.5rem;
+            transform: translateY(0); /* Always visible on mobile for better accessibility */
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        }
+
+        .category-content h3 {
+            font-size: 1.25rem;
+        }
+
+        .category-content p {
+            font-size: 0.85rem;
+        }
     }
 
     /* Mobile Hero Search Styling */
@@ -438,7 +460,7 @@
                             style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <div style="padding: 1.5rem;">
-                        <span style="font-size: 0.8rem; color: var(--primary); font-weight: 700;">NEW</span>
+                        <span style="font-size: 0.8rem; color: #cfa0a8; font-weight: 700;">NEW</span>
                         <h4 style="margin: 0.5rem 0;">{{ product.name }}</h4>
                         <div style="font-weight: 700;">₹{{ product.price }}</div>
                     </div>

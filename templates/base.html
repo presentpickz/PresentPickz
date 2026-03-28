@@ -255,6 +255,7 @@
             menuToggle.addEventListener('click', () => {
                 mobileMenu.classList.add('active');
                 overlay.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
             });
         }
 
@@ -262,9 +263,29 @@
         if (overlay) overlay.addEventListener('click', closeMenuFunc);
 
         function closeMenuFunc() {
-            mobileMenu.classList.remove('active');
-            overlay.classList.remove('active');
+            if (mobileMenu) mobileMenu.classList.remove('active');
+            if (overlay) overlay.classList.remove('active');
+            document.body.style.overflow = ''; // Restore scrolling
+            document.documentElement.style.overflow = ''; // Ensure html is also reset
         }
+
+        // Handle navigation and "back" button menu state restoration
+        window.addEventListener('pageshow', (event) => {
+            closeMenuFunc();
+        });
+
+        // Handle browser back button via popstate
+        window.addEventListener('popstate', () => {
+            closeMenuFunc();
+        });
+
+        // Ensure state is clean on initial load
+        document.addEventListener('DOMContentLoaded', closeMenuFunc);
+
+        // Close menu on link click to ensure fresh state
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', closeMenuFunc);
+        });
 
         // Mobile Search Toggle
         const searchToggle = document.querySelector('.search-toggle');
