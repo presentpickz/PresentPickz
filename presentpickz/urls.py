@@ -18,9 +18,6 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('accounts/', include('allauth.urls')),
     
-    # Google Verification File (for Search Console)
-    path('googleccfc70bcd8a6f5fe.html', lambda r: FileResponse(open(os.path.join(settings.BASE_DIR, 'googleccfc70bcd8a6f5fe.html'), 'rb'), content_type="text/html")),
-
     # ALWAYS serve media files (works in debug AND production)
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
