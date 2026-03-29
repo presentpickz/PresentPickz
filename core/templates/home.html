@@ -161,7 +161,7 @@
                         <img src="{% static 'images/' %}{{ product.image }}" alt="{{ product.name }}">
                         {% if product.badge %}
                         <span
-                            style="position: absolute; top: 12px; left: 12px; background: white; padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; box-shadow: var(--shadow-sm);">
+                            style="position: absolute; top: 12px; left: 12px; background: #8a7c80; color: white; padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; box-shadow: var(--shadow-sm); z-index: 10;">
                             {{ product.badge }}
                         </span>
                         {% endif %}

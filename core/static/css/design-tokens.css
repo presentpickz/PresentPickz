@@ -85,7 +85,8 @@
     /* ========================================
        6. ICONS & RATINGS
        ======================================== */
-    --star-gold: #E3A45C;
+    --star-gold: #8a7c80;
+    --star-empty: #E5E7EB;
     /* Star Rating (Gold-Rose) */
     --icon-stroke: #B97A82;
     /* Icon Stroke */
