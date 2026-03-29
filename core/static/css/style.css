@@ -28,9 +28,9 @@
     --white: #FFFFFF;
 
     /* Accent Colors */
-    --accent: #E3A45C;
-    /* Star Rating / Gold-Rose */
-    --accent-gold: #E3A45C;
+    --accent: #8a7c80;
+    /* Star Rating */
+    --accent-gold: #8a7c80;
 
     /* Text Colors */
     --text-main: #5A4F52;
@@ -48,7 +48,7 @@
     --border-divider: #E3BFC4;
 
     /* Icon Colors */
-    --star-gold: #E3A45C;
+    --star-gold: #8a7c80;
     --icon-stroke: #B97A82;
 
     /* Button System */
