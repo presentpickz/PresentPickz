@@ -183,11 +183,8 @@
     }
 
     .wishlist-btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
         background: white !important;
-        border: none !important;
+        border: 1px solid var(--border-soft) !important;
         border-radius: 50% !important;
         width: 36px;
         height: 36px;
@@ -196,9 +193,9 @@
         justify-content: center;
         cursor: pointer;
         z-index: 20;
-        color: #ccc !important;
+        color: #7a3f46 !important;
         transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1), inset 0 -3px 0 rgba(0,0,0,0.05) !important;
+        box-shadow: var(--shadow-sm) !important;
     }
 
     .wishlist-btn:hover {
@@ -254,10 +251,20 @@
                         {% endif %}
                 </div>
                 <div class="product-info">
-                    <div class="product-category">{{ product.category.name|default:"General" }}</div>
-                    <h3 class="product-name">{{ product.name }}</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div style="flex: 1;">
+                            <div class="product-category">{{ product.category.name|default:"General" }}</div>
+                            <h3 class="product-name" style="margin-bottom: 0.25rem;">{{ product.name }}</h3>
+                        </div>
+                        <!-- Wishlist Button Repositioned Here -->
+                        <button class="wishlist-btn {% if product.id in wishlisted_ids %}active{% endif %}"
+                            data-product-id="{{ product.id }}" aria-label="Toggle Wishlist" title="Toggle Wishlist"
+                            style="flex-shrink: 0; margin-left: 10px;">
+                            <i class="{% if product.id in wishlisted_ids %}fas{% else %}far{% endif %} fa-heart"></i>
+                        </button>
+                    </div>
                     <div class="product-price-row">
-                        <span class="current-price">₹{{ product.price }}</span>
+                        <span class="current-price" style="color: #7a3f46;">₹{{ product.price }}</span>
                         {% if product.original_price and product.original_price > product.price %}
                         <span class="original-price">₹{{ product.original_price }}</span>
                         <span class="discount">{{ product.discount_percentage }}% OFF</span>
@@ -265,12 +272,6 @@
                     </div>
                 </div>
             </a>
-
-            <!-- Wishlist Button -->
-            <button class="wishlist-btn {% if product.id in wishlisted_ids %}active{% endif %}"
-                data-product-id="{{ product.id }}" aria-label="Toggle Wishlist" title="Toggle Wishlist">
-                <i class="{% if product.id in wishlisted_ids %}fas{% else %}far{% endif %} fa-heart"></i>
-            </button>
         </div>
         {% empty %}
         <p>No products found in this category.</p>

@@ -304,13 +304,17 @@
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 415px) {
     .wishlist-grid {
-        grid-template-columns: 1fr 1fr; /* Maintain 2 columns but be very tight */
+        grid-template-columns: 1fr 1fr;
         gap: 0.5rem;
     }
     
     .wishlist-header h1 {
         font-size: 1.8rem;
+    }
+
+    .btn-shop-now {
+        display: none !important;
     }
 }

@@ -147,7 +147,7 @@ style.textContent = `
     }
     
     .wishlist-toast.success {
-        background: #48bb78;
+        background: #7a3f46;
     }
 `;
 document.head.appendChild(style);
